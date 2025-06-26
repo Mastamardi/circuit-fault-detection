@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuit Component Fault Detection Dashboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 shadow-lg transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-20 w-full">
+                <!-- Logo -->
+                <a href="/" class="flex items-center flex-shrink-0">
+                    <img src="{{ url_for('static', filename='images/college_logo.png') }}" alt="College Logo" class="h-20 w-auto mr-8 select-none object-contain" style="min-width:80px;">
+                </a>
+                <!-- Hamburger Button (Mobile) -->
+                <div class="md:hidden flex items-center">
+                    <button id="navbar-toggle" class="text-gray-700 dark:text-gray-200 focus:outline-none">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Navbar Links -->
+                <div id="navbar-menu" class="hidden md:flex flex-1 items-center justify-center">
+                    <div class="flex space-x-10 items-center whitespace-nowrap flex-col md:flex-row md:space-x-10 md:space-y-0 space-y-4 md:space-y-0">
+                        <a href="/" class="inline-flex items-center px-2 py-1 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Home</a>
+                        <a href="{{ url_for('data_upload') }}" class="inline-flex items-center px-2 py-1 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Data Upload</a>
+                        <a href="{{ url_for('mapreduce') }}" class="inline-flex items-center px-2 py-1 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">MapReduce</a>
+                        <a href="{{ url_for('spark_analysis') }}" class="inline-flex items-center px-2 py-1 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Spark Analysis</a>
+                        <a href="{{ url_for('visualizations') }}" class="inline-flex items-center px-2 py-1 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Visualizations</a>
+                        <a href="{{ url_for('components') }}" class="inline-flex items-center px-2 py-1 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Components</a>
+                    </div>
+                </div>
+                <!-- User Section & Dark Mode Toggle -->
+                <div class="hidden md:flex items-center space-x-6 ml-8">
+                    <div class="flex items-center space-x-4">
+                        {% if is_authenticated %}
+                            <span class="text-gray-500 dark:text-gray-300 text-base truncate max-w-xs">Welcome, {{ current_user }}</span>
+                            <a href="{{ url_for('logout') }}" class="inline-flex items-center px-2 py-1 text-base text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200">Logout</a>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="inline-flex items-center px-2 py-1 text-base text-gray-500 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Login</a>
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center pl-4 border-l border-gray-200 dark:border-gray-700 h-full">
+                        <button id="darkModeToggle" class="flex items-center justify-center h-12 w-12 p-0 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200">
+                            <!-- Sun icon -->
+                            <svg class="w-6 h-6 text-gray-800 dark:text-yellow-300 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <!-- Moon icon -->
+                            <svg class="w-6 h-6 text-gray-800 dark:text-gray-200 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden hidden flex-col space-y-2 mt-4">
+                <div class="flex flex-col space-y-2">
+                    <a href="/" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Home</a>
+                    <a href="{{ url_for('data_upload') }}" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Data Upload</a>
+                    <a href="{{ url_for('mapreduce') }}" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">MapReduce</a>
+                    <a href="{{ url_for('spark_analysis') }}" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Spark Analysis</a>
+                    <a href="{{ url_for('visualizations') }}" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Visualizations</a>
+                    <a href="{{ url_for('components') }}" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Components</a>
+                    <div class="flex items-center space-x-4 mt-2">
+                        {% if is_authenticated %}
+                            <span class="text-gray-500 dark:text-gray-300 text-base truncate max-w-xs">Welcome, {{ current_user }}</span>
+                            <a href="{{ url_for('logout') }}" class="inline-flex items-center px-2 py-1 text-base text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200">Logout</a>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="inline-flex items-center px-2 py-1 text-base text-gray-500 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Login</a>
+                        {% endif %}
+                        <button id="darkModeToggleMobile" class="flex items-center justify-center h-10 w-10 p-0 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200">
+                            <!-- Sun icon -->
+                            <svg class="w-6 h-6 text-gray-800 dark:text-yellow-300 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <!-- Moon icon -->
+                            <svg class="w-6 h-6 text-gray-800 dark:text-gray-200 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 shadow-lg mt-8 transition-colors duration-200">
+        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-gray-500 dark:text-gray-400">© 2025 Circuit Component Fault Detection Dashboard | OMKAR BABU MASTAMARDI | RV College of Engineering</p>
+        </div>
+    </footer>
+
+    <!-- Initialize AOS -->
+    <script>
+        AOS.init();
+    </script>
+
+    <!-- Dark Mode Toggle Script -->
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+
+        // Toggle dark mode
+        darkModeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        });
+    </script>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+
+    <!-- Fastbots.ai Chatbot Embed Code -->
+    <div class="chatbot-container" style="position: fixed; right: 1rem; top: 50%; transform: translateY(-50%); z-index: 1000;">
+        <script defer src="https://app.fastbots.ai/embed.js" data-bot-id="cmbatv0lh0gpjn8lwow5432ur"></script>
+    </div>
+
+    <script>
+    // Navbar toggle for mobile
+    const navbarToggle = document.getElementById('navbar-toggle');
+    const navbarMenu = document.getElementById('navbar-menu');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (navbarToggle) {
+        navbarToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+    // Dark mode toggle for mobile
+    const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+    if (darkModeToggleMobile) {
+        darkModeToggleMobile.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        });
+    }
+    </script>
+</body>
+</html> 

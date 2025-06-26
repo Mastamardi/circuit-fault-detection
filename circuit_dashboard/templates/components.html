@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <div class="text-center mb-12 animate-fade-in">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">Explore Circuit Board Components</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">Here's a curated visual guide to common electronic components found in circuit boards, organized by type.</p>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div class="relative w-full md:w-96">
+            <input type="text" id="componentSearch" placeholder="Search components..." 
+                   class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-800 dark:text-white
+                          focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+        </div>
+        <div class="w-full md:w-64">
+            <select id="categoryFilter" 
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
+                           bg-white dark:bg-gray-700 text-gray-800 dark:text-white
+                           focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="all">All Categories</option>
+                <option value="resistors">Resistors</option>
+                <option value="variable-resistors">Variable Resistors</option>
+                <option value="capacitors">Capacitors</option>
+                <option value="ics">Integrated Circuits</option>
+                <option value="power-modules">Power Modules</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Components Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Resistors Section -->
+        <div class="component-category" data-category="resistors">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                <i class="fas fa-bolt mr-2 text-yellow-500"></i> Resistors
+            </h2>
+            <div class="space-y-6">
+                <!-- Carbon Composition Resistor -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/carbon-resistor.jpg" 
+                         alt="Carbon Composition Resistor"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Carbon Composition Resistor</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A fundamental passive component that limits current flow. Carbon resistors are made from carbon powder mixed with a binder, offering good stability and reliability. They are commonly used in general-purpose applications and are identified by their color bands indicating resistance value and tolerance.</p>
+                </div>
+
+                <!-- Metal Film Resistor -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/metal-film-resistor.jpg" 
+                         alt="Metal Film Resistor"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Metal Film Resistor</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A precision resistor with a thin metal film deposited on a ceramic substrate. These resistors offer excellent temperature stability, low noise, and high accuracy. They are ideal for precision applications, audio circuits, and measurement equipment.</p>
+                </div>
+
+                <!-- Wire Wound Resistor -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/wire-wound-resistor.jpg" 
+                         alt="Wire Wound Resistor"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Wire Wound Resistor</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A high-power resistor made by winding resistance wire around a ceramic core. These resistors can handle high power dissipation and offer excellent stability. They are commonly used in power supplies, motor controls, and high-current applications.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Variable Resistors Section -->
+        <div class="component-category" data-category="variable-resistors">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                <i class="fas fa-sliders-h mr-2 text-blue-500"></i> Variable Resistors
+            </h2>
+            <div class="space-y-6">
+                <!-- Potentiometer -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/potentiometer.jpg" 
+                         alt="Potentiometer"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Potentiometer</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A three-terminal variable resistor with a rotating or sliding contact. Potentiometers are used for volume controls, tuning circuits, and as position sensors. They provide smooth, continuous adjustment of resistance and are essential in audio equipment and control systems.</p>
+                </div>
+
+                <!-- Rheostat -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/rheostat.jpg" 
+                         alt="Rheostat"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Rheostat</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A two-terminal variable resistor used to control current flow. Rheostats are typically used in high-power applications like motor speed control and lighting dimmers. They are designed to handle significant power dissipation and provide reliable current regulation.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Capacitors Section -->
+        <div class="component-category" data-category="capacitors">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                <i class="fas fa-battery-three-quarters mr-2 text-green-500"></i> Capacitors
+            </h2>
+            <div class="space-y-6">
+                <!-- Electrolytic Capacitor -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/electrolytic-capacitor.jpg" 
+                         alt="Electrolytic Capacitor"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Electrolytic Capacitor</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A polarized capacitor with high capacitance values, typically used for power supply filtering and energy storage. These capacitors use an electrolyte as one of their plates and offer high capacitance in a compact package. They are essential in power supplies and audio circuits.</p>
+                </div>
+
+                <!-- Ceramic Capacitor -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/ceramic-capacitor.jpg" 
+                         alt="Ceramic Capacitor"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Ceramic Capacitor</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A non-polarized capacitor made from ceramic material. These capacitors are small, reliable, and have low parasitic effects. They are commonly used for decoupling, filtering, and high-frequency applications. Their stability and low cost make them popular in modern electronics.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integrated Circuits Section -->
+        <div class="component-category" data-category="ics">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                <i class="fas fa-microchip mr-2 text-purple-500"></i> Integrated Circuits
+            </h2>
+            <div class="space-y-6">
+                <!-- IC555 Timer -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/ic555.jpg" 
+                         alt="IC555 Timer"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">IC555 Timer</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A versatile integrated circuit used for timing and oscillator applications. The 555 timer can operate in astable (oscillator) or monostable (one-shot) modes. It is widely used in timing circuits, pulse generation, and LED flashers. Its simplicity and reliability have made it a classic in electronics.</p>
+                </div>
+
+                <!-- OpAmp -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/opamp.jpg" 
+                         alt="Operational Amplifier"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Operational Amplifier</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A high-gain voltage amplifier with differential inputs. Op-amps are fundamental building blocks in analog electronics, used for signal conditioning, filtering, and mathematical operations. They offer high input impedance, low output impedance, and excellent gain characteristics.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Power Modules Section -->
+        <div class="component-category" data-category="power-modules">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                <i class="fas fa-plug mr-2 text-red-500"></i> Power Modules
+            </h2>
+            <div class="space-y-6">
+                <!-- Buck Converter -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/buck-converter.jpg" 
+                         alt="Buck Converter"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Buck Converter</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A step-down DC-DC converter that efficiently reduces voltage while increasing current. Buck converters use switching technology to achieve high efficiency and are essential in power management systems. They are commonly used in battery-powered devices and power supplies.</p>
+                </div>
+
+                <!-- Boost Converter -->
+                <div class="component-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 
+                            transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <img src="/static/images/components/boost-converter.jpg" 
+                         alt="Boost Converter"
+                         class="w-full h-48 object-cover rounded-lg mb-4"
+                         onerror="this.onerror=null; this.src='/static/images/components/placeholder.jpg';">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Boost Converter</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">A step-up DC-DC converter that increases voltage while decreasing current. Boost converters are crucial in battery-powered applications where higher voltages are needed. They are used in LED drivers, battery charging systems, and power management circuits.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Component Modal -->
+<div id="componentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-2xl w-full mx-4">
+        <div class="flex justify-between items-start mb-4">
+            <h3 id="modalTitle" class="text-2xl font-bold text-gray-800 dark:text-white"></h3>
+            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <img id="modalImage" src="" alt="" class="w-full h-64 object-cover rounded-lg mb-4">
+        <p id="modalDescription" class="text-gray-600 dark:text-gray-300"></p>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    // Search and filter functionality
+    const searchInput = document.getElementById('componentSearch');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const componentCards = document.querySelectorAll('.component-card');
+    const componentCategories = document.querySelectorAll('.component-category');
+
+    function filterComponents() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+
+        componentCategories.forEach(category => {
+            const categoryName = category.dataset.category;
+            const shouldShowCategory = selectedCategory === 'all' || categoryName === selectedCategory;
+            category.style.display = shouldShowCategory ? 'block' : 'none';
+
+            if (shouldShowCategory) {
+                const cards = category.querySelectorAll('.component-card');
+                cards.forEach(card => {
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const description = card.querySelector('p').textContent.toLowerCase();
+                    const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+                    card.style.display = matchesSearch ? 'block' : 'none';
+                });
+            }
+        });
+    }
+
+    searchInput.addEventListener('input', filterComponents);
+    categoryFilter.addEventListener('change', filterComponents);
+
+    // Modal functionality
+    const modal = document.getElementById('componentModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalImage = document.getElementById('modalImage');
+    const modalDescription = document.getElementById('modalDescription');
+
+    function openModal(card) {
+        const title = card.querySelector('h3').textContent;
+        const image = card.querySelector('img').src;
+        const description = card.querySelector('p').textContent;
+
+        modalTitle.textContent = title;
+        modalImage.src = image;
+        modalImage.alt = title;
+        modalDescription.textContent = description;
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    componentCards.forEach(card => {
+        card.addEventListener('click', () => openModal(card));
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %} 

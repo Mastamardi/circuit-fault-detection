@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8">
+    <!-- Header -->
+    <div class="text-center" data-aos="fade-up">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Spark Analysis Results</h1>
+        <p class="text-gray-600">
+            Real-time analytics and component statistics using Apache Spark
+        </p>
+    </div>
+
+    <!-- Component Statistics -->
+    <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up">
+        <h2 class="text-xl font-semibold mb-4">Component Statistics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="text-sm font-medium text-blue-800">Total Components</h3>
+                <p id="totalComponents" class="text-2xl font-bold text-blue-600">-</p>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg">
+                <h3 class="text-sm font-medium text-green-800">Healthy Components</h3>
+                <p id="healthyComponents" class="text-2xl font-bold text-green-600">-</p>
+            </div>
+            <div class="bg-yellow-50 p-4 rounded-lg">
+                <h3 class="text-sm font-medium text-yellow-800">Warning Components</h3>
+                <p id="warningComponents" class="text-2xl font-bold text-yellow-600">-</p>
+            </div>
+            <div class="bg-red-50 p-4 rounded-lg">
+                <h3 class="text-sm font-medium text-red-800">Critical Components</h3>
+                <p id="criticalComponents" class="text-2xl font-bold text-red-600">-</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Component Performance -->
+        <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="100">
+            <h2 class="text-xl font-semibold mb-4">Component Performance</h2>
+            <div class="h-80">
+                <canvas id="performanceChart"></canvas>
+            </div>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Component ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Efficiency</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="performanceTableBody" class="bg-white divide-y divide-gray-200">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Hourly Analysis -->
+        <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="200">
+            <h2 class="text-xl font-semibold mb-4">Hourly Analysis</h2>
+            <div class="h-80">
+                <canvas id="hourlyChart"></canvas>
+            </div>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hour</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Power</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fault Count</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hourlyTableBody" class="bg-white divide-y divide-gray-200">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+// Fetch and display Spark analysis results
+async function loadSparkResults() {
+    try {
+        const response = await fetch('/api/spark-results');
+        const data = await response.json();
+
+        // Update component statistics
+        updateComponentStats(data.component_stats);
+        updatePerformanceAnalysis(data.component_stats);
+        updateHourlyAnalysis(data.hourly_analysis);
+    } catch (error) {
+        console.error('Error loading Spark results:', error);
+    }
+}
+
+function updateComponentStats(data) {
+    const total = data.length;
+    const healthy = data.filter(item => item.status === 'healthy').length;
+    const warning = data.filter(item => item.status === 'warning').length;
+    const critical = data.filter(item => item.status === 'critical').length;
+
+    document.getElementById('totalComponents').textContent = total;
+    document.getElementById('healthyComponents').textContent = healthy;
+    document.getElementById('warningComponents').textContent = warning;
+    document.getElementById('criticalComponents').textContent = critical;
+}
+
+function updatePerformanceAnalysis(data) {
+    // Update chart
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: data.map(item => item.component_id),
+            datasets: [{
+                label: 'Efficiency',
+                data: data.map(item => item.efficiency),
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgb(54, 162, 235)',
+                pointBackgroundColor: 'rgb(54, 162, 235)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(54, 162, 235)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+    // Update table
+    const tableBody = document.getElementById('performanceTableBody');
+    tableBody.innerHTML = data.map(item => `
+        <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.component_id}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.efficiency.toFixed(1)}%</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    ${item.status === 'critical' ? 'bg-red-100 text-red-800' : 
+                      item.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 
+                      'bg-green-100 text-green-800'}">
+                    ${item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                </span>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function updateHourlyAnalysis(data) {
+    // Update chart
+    const ctx = document.getElementById('hourlyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map(item => item.hour),
+            datasets: [{
+                label: 'Average Power',
+                data: data.map(item => item.avg_power),
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }, {
+                label: 'Fault Count',
+                data: data.map(item => item.fault_count),
+                borderColor: 'rgb(255, 99, 132)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Update table
+    const tableBody = document.getElementById('hourlyTableBody');
+    tableBody.innerHTML = data.map(item => `
+        <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.hour}:00</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.avg_power.toFixed(2)} W</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.fault_count}</td>
+        </tr>
+    `).join('');
+}
+
+// Load results when page loads
+document.addEventListener('DOMContentLoaded', loadSparkResults);
+</script>
+{% endblock %}
+{% endblock %} 

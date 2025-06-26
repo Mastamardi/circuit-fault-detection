@@ -1,0 +1,37 @@
+component,fault,count
+Boost Converter,No,4395
+Boost Converter,Yes,167
+Buck Converter,No,4335
+Buck Converter,Yes,178
+Carbon Composition Resistor,No,4275
+Carbon Composition Resistor,Yes,152
+Ceramic Capacitor,No,4265
+Ceramic Capacitor,Yes,159
+Electrolytic Capacitor,No,4333
+Electrolytic Capacitor,Yes,173
+IC555 Timer,No,4266
+IC555 Timer,Yes,165
+Inverter Module,No,4208
+Inverter Module,Yes,145
+Metal Film Resistor,No,4352
+Metal Film Resistor,Yes,158
+Microcontroller IC,No,4316
+Microcontroller IC,Yes,156
+OpAmp IC,No,4257
+OpAmp IC,Yes,137
+Potentiometer,No,4264
+Potentiometer,Yes,154
+Rheostat,No,4188
+Rheostat,Yes,153
+Tantalum Capacitor,No,4298
+Tantalum Capacitor,Yes,150
+Thick Film Resistor,No,4211
+Thick Film Resistor,Yes,178
+Thin Film Resistor,No,4336
+Thin Film Resistor,Yes,147
+Trimmer,No,4312
+Trimmer,Yes,173
+Voltage Regulator IC,No,4257
+Voltage Regulator IC,Yes,156
+Wire Wound Resistor,No,4269
+Wire Wound Resistor,Yes,162

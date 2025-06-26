@@ -1,0 +1,423 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-16 py-8">
+    <!-- Hero Section -->
+    <div class="text-center" data-aos="fade-up">
+        <h1 class="text-5xl font-bold text-gray-900 dark:text-white mb-6">Circuit Component Fault Detection Dashboard</h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            A comprehensive solution for analyzing and detecting faults in circuit board components using big data processing techniques.
+        </p>
+    </div>
+
+    <!-- Project Guidance Section -->
+    <div class="relative group" data-aos="fade-down" data-aos-duration="1500">
+        <!-- Animated background with particles -->
+        <div class="absolute inset-0 overflow-hidden rounded-3xl">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-blue-900/20 animate-gradient-x"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-100/20 via-transparent to-transparent dark:from-blue-800/20 animate-pulse"></div>
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAzNGMwIDIuMjA5LTEuNzkxIDQtNCA0cy00LTEuNzkxLTQtNCAx.NzkxIDQgNCAx.NzkxIDQgNHoiIGZpbGw9IiM5M2NhZjUiIGZpbGwtb3BhY2l0eT0iLjEiLz48L2c+PC9zdmc+')] opacity-20"></div>
+        </div>
+
+        <!-- Main content container with enhanced styling -->
+        <div class="relative backdrop-blur-md rounded-2xl p-16 shadow-2xl border border-gray-100/50 dark:border-gray-700/50 transform transition-all duration-700 hover:scale-[1.02] hover:shadow-3xl">
+            <div class="text-center space-y-8">
+                <!-- Animated icon with enhanced styling and alignment -->
+                <div class="flex justify-center items-center mb-2">
+                    <div class="inline-flex items-center justify-center p-4 rounded-2xl bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/50 dark:to-purple-900/50 transform transition-all duration-500 hover:rotate-12 hover:scale-110 hover:shadow-lg" data-aos="zoom-in" data-aos-delay="200">
+                        <svg class="w-10 h-10 sm:w-12 sm:h-12 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Title with enhanced styling and animations -->
+                <h2 class="text-4xl sm:text-5xl font-extrabold text-gray-900 dark:text-white relative inline-block transition-all duration-500 group-hover:text-blue-600 dark:group-hover:text-blue-400" data-aos="fade-up" data-aos-delay="300">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">Project Guidance</span>
+                    <span class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/10 group-hover:to-purple-500/10 blur-xl transition-all duration-500"></span>
+                </h2>
+
+                <!-- Subtitle with enhanced styling -->
+                <p class="text-2xl sm:text-3xl text-gray-600 dark:text-gray-300 transform transition-all duration-500 group-hover:translate-y-[-2px] font-medium" data-aos="fade-up" data-aos-delay="400">
+                    This project was done under the guidance of
+                </p>
+
+                <!-- Professor's name with enhanced styling -->
+                <p class="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400 transform transition-all duration-500 hover:scale-105 hover:text-blue-700 dark:hover:text-blue-300" data-aos="fade-up" data-aos-delay="500">
+                    Prof. Vijayalakshmi M.N.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Us Section -->
+    <section id="about" class="relative mt-16" data-aos="fade-up">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-3xl blur-2xl"></div>
+        <div class="relative backdrop-blur-sm rounded-2xl p-12 shadow-xl border border-gray-100/50 dark:border-gray-700/50">
+            <div class="flex items-center space-x-4 mb-12">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50">
+                    <span class="text-3xl">👥</span>
+                </div>
+                <h2 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">About Us</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Team Member 1 -->
+                <div class="group bg-white/50 dark:bg-gray-700/50 rounded-xl p-6 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/30 dark:hover:to-purple-900/30" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-blue-100 dark:ring-blue-900/50 transform transition-all duration-500 group-hover:ring-blue-200 dark:group-hover:ring-blue-800/50">
+                        <img src="{{ url_for('static', filename='images/profiles/omkar.png') }}" 
+                             alt="Omkar Babu Mastamardi"
+                             class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
+                             onerror="this.src='https://ui-avatars.com/api/?name=Omkar+Mastamardi&background=0D8ABC&color=fff&size=128'">
+                    </div>
+                    <div class="text-center space-y-3">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">Omkar Babu Mastamardi</h3>
+                        <p class="text-lg font-medium text-gray-600 dark:text-gray-300">1RV23AI403</p>
+                        <a href="mailto:omkarbm.ai23@rvce.edu.in" 
+                           class="inline-flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300">
+                            <span class="text-xl animate-pulse">📧</span>
+                            <span class="text-sm">omkarbm.ai23@rvce.edu.in</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="group bg-white/50 dark:bg-gray-700/50 rounded-xl p-6 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:bg-gradient-to-br hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/30 dark:hover:to-pink-900/30" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-purple-100 dark:ring-purple-900/50 transform transition-all duration-500 group-hover:ring-purple-200 dark:group-hover:ring-purple-800/50">
+                        <img src="{{ url_for('static', filename='images/profiles/sabaasultana.png') }}" 
+                             alt="Sabaasultana Namaji"
+                             class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
+                             onerror="this.src='https://ui-avatars.com/api/?name=Sabaasultana+Namaji&background=FF69B4&color=fff&size=128'">
+                    </div>
+                    <div class="text-center space-y-3">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">Sabaasultana Namaji</h3>
+                        <p class="text-lg font-medium text-gray-600 dark:text-gray-300">1RV23AI405</p>
+                        <a href="mailto:sabaasultanan.ai23@rvce.edu.in" 
+                           class="inline-flex items-center space-x-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300">
+                            <span class="text-xl animate-pulse">📧</span>
+                            <span class="text-sm">sabaasultanan.ai23@rvce.edu.in</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="group bg-white/50 dark:bg-gray-700/50 rounded-xl p-6 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:bg-gradient-to-br hover:from-green-50 hover:to-teal-50 dark:hover:from-green-900/30 dark:hover:to-teal-900/30" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-green-100 dark:ring-green-900/50 transform transition-all duration-500 group-hover:ring-green-200 dark:group-hover:ring-green-800/50">
+                        <img src="{{ url_for('static', filename='images/profiles/rishikesh.png') }}" 
+                             alt="Rishikesh Nitin Kakade"
+                             class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
+                             onerror="this.src='https://ui-avatars.com/api/?name=Rishikesh+Kakade&background=4CAF50&color=fff&size=128'">
+                    </div>
+                    <div class="text-center space-y-3">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-300">Rishikesh Nitin Kakade</h3>
+                        <p class="text-lg font-medium text-gray-600 dark:text-gray-300">1RV22AI045</p>
+                        <a href="mailto:rishikeshnitin.ai22@rvce.edu.in" 
+                           class="inline-flex items-center space-x-2 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors duration-300">
+                            <span class="text-xl animate-pulse">📧</span>
+                            <span class="text-sm">rishikeshnitin.ai22@rvce.edu.in</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Overview Section -->
+    <section id="overview" class="relative mt-16" data-aos="fade-up">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-3xl blur-2xl"></div>
+        <div class="relative backdrop-blur-sm rounded-2xl p-12 shadow-xl border border-gray-100/50 dark:border-gray-700/50">
+            <div class="flex items-center space-x-4 mb-8">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/50 dark:to-purple-900/50">
+                    <span class="text-3xl">🚀</span>
+                </div>
+                <h2 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">Project Overview</h2>
+            </div>
+            <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+                This project demonstrates the power of big data processing in circuit analysis. Using MapReduce and Spark, we process large volumes of circuit component data to identify patterns, predict faults, and optimize performance.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Data Processing Card -->
+                <div class="group bg-white/50 dark:bg-gray-700/50 rounded-xl p-6 transform transition-all duration-500 hover:scale-105 hover:shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="text-2xl">⚙️</span>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Data Processing</h3>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">Efficient processing of large-scale circuit data using MapReduce and Spark.</p>
+                </div>
+
+                <!-- Visualization Card -->
+                <div class="group bg-white/50 dark:bg-gray-700/50 rounded-xl p-6 transform transition-all duration-500 hover:scale-105 hover:shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="text-2xl">📊</span>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Visualization</h3>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">Interactive charts and graphs for comprehensive data analysis.</p>
+                </div>
+
+                <!-- Fault Detection Card -->
+                <div class="group bg-white/50 dark:bg-gray-700/50 rounded-xl p-6 transform transition-all duration-500 hover:scale-105 hover:shadow-lg" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="text-2xl">🔍</span>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Fault Detection</h3>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300">Advanced algorithms for predicting and detecting circuit faults.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Objective Section -->
+    <section id="objective" class="relative mt-16" data-aos="fade-up">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-3xl blur-2xl"></div>
+        <div class="relative backdrop-blur-sm rounded-2xl p-12 shadow-xl border border-gray-100/50 dark:border-gray-700/50">
+            <div class="flex items-center space-x-4 mb-8">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/50 dark:to-blue-900/50">
+                    <span class="text-3xl">🎯</span>
+                </div>
+                <h2 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400">Objective</h2>
+            </div>
+            <div class="space-y-4">
+                <p class="text-xl text-gray-600 dark:text-gray-300">
+                    The primary objective of this project is to develop a comprehensive fault detection system for electronic circuit boards using big data processing techniques. Our goals include:
+                </p>
+                <ul class="space-y-3">
+                    <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="100">
+                        <span class="text-green-500">✓</span>
+                        <span>Implement real-time monitoring of circuit board components</span>
+                    </li>
+                    <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="200">
+                        <span class="text-green-500">✓</span>
+                        <span>Develop efficient fault detection algorithms</span>
+                    </li>
+                    <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="300">
+                        <span class="text-green-500">✓</span>
+                        <span>Create an intuitive visualization dashboard</span>
+                    </li>
+                    <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="400">
+                        <span class="text-green-500">✓</span>
+                        <span>Optimize performance using distributed computing</span>
+                    </li>
+                    <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="500">
+                        <span class="text-green-500">✓</span>
+                        <span>Provide actionable insights for maintenance and optimization</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Statement Section -->
+    <section id="problem" class="relative mt-16" data-aos="fade-up">
+        <div class="absolute inset-0 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-3xl blur-2xl"></div>
+        <div class="relative backdrop-blur-sm rounded-2xl p-12 shadow-xl border border-gray-100/50 dark:border-gray-700/50">
+            <div class="flex items-center space-x-4 mb-8">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/50 dark:to-orange-900/50">
+                    <span class="text-3xl">⚠️</span>
+                </div>
+                <h2 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-orange-600 dark:from-red-400 dark:to-orange-400">Problem Statement</h2>
+            </div>
+            <div class="space-y-4">
+                <p class="text-xl text-gray-600 dark:text-gray-300">
+                    Modern electronic circuit boards generate vast amounts of sensor data that needs to be processed and analyzed for fault detection. The challenges include:
+                </p>
+                <ul class="space-y-3">
+                    <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="100">
+                        <span class="text-red-500">•</span>
+                        <span>Processing large volumes of real-time sensor data</span>
+                    </li>
+                    <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="200">
+                        <span class="text-red-500">•</span>
+                        <span>Identifying patterns and anomalies in component behavior</span>
+                    </li>
+                    <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="300">
+                        <span class="text-red-500">•</span>
+                        <span>Predicting potential faults before they occur</span>
+                    </li>
+                    <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="400">
+                        <span class="text-red-500">•</span>
+                        <span>Managing and visualizing complex data relationships</span>
+                    </li>
+                    <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300" data-aos="fade-up" data-aos-delay="500">
+                        <span class="text-red-500">•</span>
+                        <span>Ensuring system scalability and performance</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology Section -->
+    <section id="methodology" class="relative mt-16" data-aos="fade-up">
+        <div class="absolute inset-0 bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 rounded-3xl blur-2xl"></div>
+        <div class="relative backdrop-blur-sm rounded-2xl p-12 shadow-xl border border-gray-100/50 dark:border-gray-700/50">
+            <div class="flex items-center space-x-4 mb-8">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-green-100 to-teal-100 dark:from-green-900/50 dark:to-teal-900/50">
+                    <span class="text-3xl">📋</span>
+                </div>
+                <h2 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-teal-600 dark:from-green-400 dark:to-teal-400">Methodology</h2>
+            </div>
+            <div class="space-y-8">
+                <!-- Data Collection -->
+                <div class="bg-white/50 dark:bg-gray-700/50 rounded-xl p-6 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="text-2xl">📥</span>
+                        <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Data Collection</h3>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                        Continuous monitoring of circuit board components using various sensors to collect:
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Voltage measurements</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Current readings</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Temperature data</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Power consumption metrics</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Data Processing -->
+                <div class="bg-white/50 dark:bg-gray-700/50 rounded-xl p-6 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="text-2xl">⚙️</span>
+                        <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Data Processing</h3>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                        Implementation of distributed computing techniques:
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>MapReduce for batch processing</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Spark for real-time analysis</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Anomaly detection algorithms</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Pattern recognition systems</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Visualization & Analysis -->
+                <div class="bg-white/50 dark:bg-gray-700/50 rounded-xl p-6 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-lg" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="text-2xl">📊</span>
+                        <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Visualization & Analysis</h3>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                        Interactive dashboard features:
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Real-time data visualization</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Component performance metrics</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Fault prediction indicators</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+                            <span class="text-green-500">→</span>
+                            <span>Trend analysis tools</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Initialize AOS with enhanced settings
+    AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 50,
+        easing: 'ease-out-cubic'
+    });
+});
+</script>
+
+<style>
+@keyframes gradient-x {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-x 15s ease infinite;
+}
+
+.shadow-3xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Remove body background style */
+/*
+body {
+    background-image: url("{{ url_for('static', filename='images/rvce_img.jpg') }}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+*/
+
+@media (max-width: 640px) {
+    .text-5xl {
+        font-size: 2.5rem;
+    }
+    .text-4xl {
+        font-size: 2rem;
+    }
+    .text-3xl {
+        font-size: 1.5rem;
+    }
+    .text-2xl {
+        font-size: 1.25rem;
+    }
+    .p-16 {
+        padding: 2rem;
+    }
+}
+</style>
+{% endblock %} 

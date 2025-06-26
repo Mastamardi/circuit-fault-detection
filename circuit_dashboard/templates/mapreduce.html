@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8">
+    <!-- Header -->
+    <div class="text-center" data-aos="fade-up">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">MapReduce Analysis Results</h1>
+        <p class="text-gray-600">
+            View the results of MapReduce processing on circuit component data
+        </p>
+    </div>
+
+    <!-- Results Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Fault Analysis -->
+        <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up">
+            <h2 class="text-xl font-semibold mb-4">Fault Analysis</h2>
+            <div class="h-80">
+                <canvas id="faultChart"></canvas>
+            </div>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Component ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fault Count</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="faultTableBody" class="bg-white divide-y divide-gray-200">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Power Analysis -->
+        <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="100">
+            <h2 class="text-xl font-semibold mb-4">Power Consumption Analysis</h2>
+            <div class="h-80">
+                <canvas id="powerChart"></canvas>
+            </div>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Component ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Power</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Max Power</th>
+                        </tr>
+                    </thead>
+                    <tbody id="powerTableBody" class="bg-white divide-y divide-gray-200">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Temperature Analysis -->
+        <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="200">
+            <h2 class="text-xl font-semibold mb-4">Temperature Analysis</h2>
+            <div class="h-80">
+                <canvas id="tempChart"></canvas>
+            </div>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Component ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Temp</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Max Temp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tempTableBody" class="bg-white divide-y divide-gray-200">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+// Fetch and display MapReduce results
+async function loadMapReduceResults() {
+    try {
+        const response = await fetch('/api/mapreduce-results');
+        const data = await response.json();
+
+        // Update fault analysis
+        updateFaultAnalysis(data.fault_analysis);
+        updatePowerAnalysis(data.power_analysis);
+        updateTempAnalysis(data.temp_analysis);
+    } catch (error) {
+        console.error('Error loading MapReduce results:', error);
+    }
+}
+
+function updateFaultAnalysis(data) {
+    // Update chart
+    const ctx = document.getElementById('faultChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.map(item => item.component_id),
+            datasets: [{
+                label: 'Fault Count',
+                data: data.map(item => item.fault_count),
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor: 'rgb(255, 99, 132)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Update table
+    const tableBody = document.getElementById('faultTableBody');
+    tableBody.innerHTML = data.map(item => `
+        <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.component_id}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.fault_count}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.fault_count > 5 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">
+                    ${item.fault_count > 5 ? 'Critical' : 'Normal'}
+                </span>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function updatePowerAnalysis(data) {
+    // Update chart
+    const ctx = document.getElementById('powerChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map(item => item.component_id),
+            datasets: [{
+                label: 'Average Power',
+                data: data.map(item => item.avg_power),
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Update table
+    const tableBody = document.getElementById('powerTableBody');
+    tableBody.innerHTML = data.map(item => `
+        <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.component_id}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.avg_power.toFixed(2)} W</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.max_power.toFixed(2)} W</td>
+        </tr>
+    `).join('');
+}
+
+function updateTempAnalysis(data) {
+    // Update chart
+    const ctx = document.getElementById('tempChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map(item => item.component_id),
+            datasets: [{
+                label: 'Average Temperature',
+                data: data.map(item => item.avg_temp),
+                borderColor: 'rgb(255, 159, 64)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Update table
+    const tableBody = document.getElementById('tempTableBody');
+    tableBody.innerHTML = data.map(item => `
+        <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.component_id}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.avg_temp.toFixed(1)}°C</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.max_temp.toFixed(1)}°C</td>
+        </tr>
+    `).join('');
+}
+
+// Load results when page loads
+document.addEventListener('DOMContentLoaded', loadMapReduceResults);
+</script>
+{% endblock %}
+{% endblock %} 

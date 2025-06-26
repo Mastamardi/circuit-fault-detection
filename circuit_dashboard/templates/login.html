@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Circuit Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            /* background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); */
+            /* background-size: 400% 400%; */
+            /* animation: gradientBG 15s ease infinite; */
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s ease;
+        }
+
+        .dark .login-container {
+            background-color: rgba(31, 41, 55, 0.95);
+        }
+
+        .dark .text-gray-700 {
+            color: #d1d5db;
+        }
+
+        .dark input {
+            background-color: #4b5563;
+            color: #e5e7eb;
+            border-color: #6b7280;
+        }
+
+        .dark input:focus {
+            border-color: #60a5fa;
+        }
+
+        .dark .text-gray-600 {
+            color: #d1d5db;
+        }
+
+        .dark .form-checkbox:checked {
+             background-color: #3b82f6;
+             border-color: #3b82f6;
+        }
+
+        .dark .form-checkbox {
+             border-color: #6b7280;
+        }
+
+        .entrance-animation {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dark-mode-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="login-bg min-h-screen transition-colors duration-300 ease-in-out"
+      style="background: url('/static/images/college_bg.jpg') no-repeat center center fixed; background-size: cover;">
+    <div class="dark-mode-toggle">
+        <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0
+                 0010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4
+                .707a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707A1 1 0 0114.707 2.707zM7 10a3 3 0 11-6 0 3 3 0 016 0zm-1.757 4.243a1 1
+                0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM10 15a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm4.95-.707a1 1 0
+                010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zm-2.707-4.243a1 1 0
+                01-1.414 0l-.707-.707a1 1 0 111.414-1.414l.707.707a1 1 0 010 1.414z"></path></svg>
+        </button>
+    </div>
+    <div class="login-container p-8 rounded-lg shadow-lg w-full max-w-sm entrance-animation">
+        <h2 class="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white transition-colors duration-300 ease-in-out">Login</h2>
+        <form id="loginForm">
+            <div class="mb-4 entrance-animation" style="animation-delay: 0.1s;">
+                <label for="email" class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2 transition-colors duration-300 ease-in-out">Email</label>
+                <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 transition-all duration-300 ease-in-out" required>
+            </div>
+            <div class="mb-6 entrance-animation" style="animation-delay: 0.2s;">
+                <label for="password" class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2 transition-colors duration-300 ease-in-out">Password</label>
+                <div class="relative">
+                    <input type="password" id="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 transition-all duration-300 ease-in-out" required>
+                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none transition-colors duration-300 ease-in-out">
+                        Show
+                    </button>
+                </div>
+                <div class="flex items-center justify-between entrance-animation" style="animation-delay: 0.3s;">
+                    <label class="flex items-center text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300 ease-in-out">
+                        <input type="checkbox" name="remember" class="form-checkbox h-4 w-4 text-blue-600 transition-colors duration-300 ease-in-out focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:checked:bg-blue-600">
+                        <span class="ml-2">Remember Me</span>
+                    </label>
+                    <a href="#" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-600 transition-colors duration-300 ease-in-out">Forgot Password?</a>
+                </div>
+            </div>
+            <div class="flex items-center justify-between entrance-animation" style="animation-delay: 0.4s;">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full transition-all duration-300 ease-in-out transform hover:scale-105">
+                    Sign In
+                </button>
+            </div>
+        </form>
+        <div id="message" class="mt-4 text-center text-sm text-gray-600 dark:text-gray-300 entrance-animation transition-colors duration-300 ease-in-out" style="animation-delay: 0.5s;"></div>
+        
+        <!-- Registration Link -->
+        <div class="mt-6 text-center entrance-animation" style="animation-delay: 0.6s;">
+            <p class="text-gray-600 dark:text-gray-300 mb-2">Don't have an account?</p>
+            <a href="{{ url_for('register') }}" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out transform hover:scale-105">
+                Register Now
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+
+        // Check initial theme preference
+        const isDarkMode = localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+        if (isDarkMode) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+
+        // Toggle theme
+        themeToggleBtn.addEventListener('click', function() {
+            htmlElement.classList.toggle('dark');
+            let theme = 'light';
+            if (htmlElement.classList.contains('dark')) {
+                theme = 'dark';
+            }
+            localStorage.setItem('color-theme', theme);
+        });
+
+        // Password visibility toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? 'Show' : 'Hide';
+        });
+
+        // Basic form submission (will be updated for backend later)
+        const loginForm = document.getElementById('loginForm');
+        const messageDiv = document.getElementById('message');
+
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // Basic validation
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const rememberInput = document.querySelector('input[name="remember"]');
+
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            const remember = rememberInput.checked;
+
+            if (!email || !password) {
+                messageDiv.textContent = 'Please enter both email and password.';
+                messageDiv.style.color = 'red';
+                return;
+            }
+
+            messageDiv.textContent = 'Logging in...';
+            messageDiv.style.color = 'orange';
+
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('password', password);
+            if (remember) {
+                formData.append('remember', 'on');
+            }
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.textContent = data.message || 'Login successful!';
+                    messageDiv.style.color = 'green';
+                    
+                    // Redirect to the home page after successful login
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
+                } else {
+                    messageDiv.textContent = data.message || 'Login failed.';
+                    messageDiv.style.color = 'red';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'An error occurred during login.';
+                messageDiv.style.color = 'red';
+            }
+        });
+
+        // Check if user is already logged in
+        async function checkLoginStatus() {
+            try {
+                const response = await fetch('/api/login-status');
+                const data = await response.json();
+                
+                if (data.logged_in) {
+                    window.location.href = data.redirect || '/';
+                }
+            } catch (error) {
+                console.error('Error checking login status:', error);
+            }
+        }
+
+        // Check login status when page loads
+        checkLoginStatus();
+    </script>
+</body>
+</html> 

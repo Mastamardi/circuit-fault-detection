@@ -1,0 +1,235 @@
+/* Custom styles for the dashboard */
+
+/* Smooth transitions */
+.transition {
+    transition: all 0.3s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #4b5563;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+/* Chart container styles */
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 100%;
+    width: 100%;
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.dark .chart-container {
+    background: #1f2937;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Table styles */
+.table-container {
+    overflow-x: auto;
+    margin-top: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.dark .table-container {
+    background: #1f2937;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Card hover effects */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.dark .card-hover:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* Loading spinner */
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #0ea5e9;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+.dark .loading-spinner {
+    border: 4px solid #374151;
+    border-top: 4px solid #60a5fa;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Status badges */
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-healthy {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.dark .status-healthy {
+    background-color: #064e3b;
+    color: #a7f3d0;
+}
+
+.status-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.dark .status-warning {
+    background-color: #78350f;
+    color: #fcd34d;
+}
+
+.status-critical {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.dark .status-critical {
+    background-color: #7f1d1d;
+    color: #fca5a5;
+}
+
+/* File upload area */
+.upload-area {
+    border: 2px dashed #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.dark .upload-area {
+    border-color: #374151;
+    background: #1f2937;
+}
+
+.upload-area:hover {
+    border-color: #0ea5e9;
+    background-color: #f8fafc;
+}
+
+.dark .upload-area:hover {
+    border-color: #60a5fa;
+    background-color: #111827;
+}
+
+/* Glass effect for cards */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-effect {
+    background: rgba(31, 41, 55, 0.7);
+    border: 1px solid rgba(75, 85, 99, 0.2);
+}
+
+/* Gradient backgrounds */
+.gradient-primary {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+}
+
+.gradient-secondary {
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .chart-container {
+        height: 300px;
+    }
+    
+    .table-container {
+        margin-top: 0.5rem;
+    }
+}
+
+body.login-bg {
+    position: relative;
+    background: url('/static/images/college_bg.jpg') no-repeat center center fixed !important;
+    background-size: cover !important;
+    background-color: #000 !important;
+}
+
+body.login-bg::before {
+    content: none !important;
+}
+
+.login-bg .login-container {
+    background-color: #fff !important;
+    max-width: 320px;
+    padding: 1.5rem 1.25rem;
+}
+
+.dark .login-bg .login-container {
+    background-color: #1f2937 !important;
+}
+
+@media (min-width: 768px) {
+  html body.login-bg > .login-container,
+  body.login-bg > .login-container {
+    position: absolute !important;
+    left: 7vw !important;
+    bottom: 7vh !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    margin: 0 !important;
+    z-index: 10 !important;
+  }
+} 

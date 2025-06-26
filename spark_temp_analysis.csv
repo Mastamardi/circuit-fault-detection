@@ -1,0 +1,4 @@
+temperature_category,count,avg_temperature,min_temperature,max_temperature
+High,24845,79.59481585832134,70.01,95.0
+Low,12888,34.77158752327749,25.0,39.99
+Normal,42267,54.966237963422834,40.0,70.0

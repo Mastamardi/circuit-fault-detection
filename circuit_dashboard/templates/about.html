@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-12 py-8">
+    <!-- Header -->
+    <div class="text-center" data-aos="fade-up">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">About Our Project</h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            A comprehensive circuit analysis dashboard that leverages MapReduce and Spark for efficient data processing and visualization.
+        </p>
+    </div>
+
+    <!-- Project Guidance Card -->
+    <div class="max-w-4xl mx-auto" data-aos="zoom-in" data-aos-duration="1000">
+        <div class="relative group">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-gradient"></div>
+            <div class="relative bg-white dark:bg-gray-800 rounded-xl p-8 shadow-xl">
+                <div class="flex items-center justify-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <svg class="w-12 h-12 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <div class="text-center">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Project Guidance</h2>
+                        <p class="text-xl text-gray-600 dark:text-gray-300">This project was done under the guidance of</p>
+                        <p class="text-2xl font-semibold text-blue-600 dark:text-blue-400 mt-2">Prof. Vijayalakshmi M.N.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Members Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+        <!-- Team Member 1 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300" data-aos="fade-up">
+            <div class="p-6">
+                <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/profiles/omkar.png') }}" 
+                         alt="Omkar Babu Mastamardi"
+                         class="w-full h-full object-cover"
+                         onerror="this.src='https://ui-avatars.com/api/?name=Omkar+Mastamardi&background=0D8ABC&color=fff&size=128'">
+                </div>
+                <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">Omkar Babu Mastamardi</h3>
+                <p class="text-center text-gray-600 dark:text-gray-300 mb-4">USN: 1RV23AI403</p>
+                <div class="text-center">
+                    <a href="mailto:omkarbm.ai23@rvce.edu.in" class="text-blue-500 hover:text-blue-600 transition-colors duration-300">
+                        omkarbm.ai23@rvce.edu.in
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300" data-aos="fade-up" data-aos-delay="100">
+            <div class="p-6">
+                <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/profiles/sabaasultana.png') }}" 
+                         alt="Sabaasultana Namaji"
+                         class="w-full h-full object-cover"
+                         onerror="this.src='https://ui-avatars.com/api/?name=Sabaasultana+Namaji&background=FF69B4&color=fff&size=128'">
+                </div>
+                <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">Sabaasultana Namaji</h3>
+                <p class="text-center text-gray-600 dark:text-gray-300 mb-4">USN: 1RV23AI405</p>
+                <div class="text-center">
+                    <a href="mailto:sabaasultanan.ai23@rvce.edu.in" class="text-blue-500 hover:text-blue-600 transition-colors duration-300">
+                        sabaasultanan.ai23@rvce.edu.in
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300" data-aos="fade-up" data-aos-delay="200">
+            <div class="p-6">
+                <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
+                    <img src="{{ url_for('static', filename='images/profiles/rishikesh.png') }}" 
+                         alt="Rishikesh Nitin Kakade"
+                         class="w-full h-full object-cover"
+                         onerror="this.src='https://ui-avatars.com/api/?name=Rishikesh+Kakade&background=4CAF50&color=fff&size=128'">
+                </div>
+                <h3 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">Rishikesh Nitin Kakade</h3>
+                <p class="text-center text-gray-600 dark:text-gray-300 mb-4">USN: 1RV22AI045</p>
+                <div class="text-center">
+                    <a href="mailto:rishikeshnitin.ai22@rvce.edu.in" class="text-blue-500 hover:text-blue-600 transition-colors duration-300">
+                        rishikeshnitin.ai22@rvce.edu.in
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Description -->
+    <div class="mt-12 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8" data-aos="fade-up">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Project Overview</h2>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">
+            This project demonstrates the power of big data processing in circuit analysis. Using MapReduce and Spark, we process large volumes of circuit component data to identify patterns, predict faults, and optimize performance.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Data Processing</h3>
+                <p class="text-gray-600 dark:text-gray-300">Efficient processing of large-scale circuit data using MapReduce and Spark.</p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Visualization</h3>
+                <p class="text-gray-600 dark:text-gray-300">Interactive charts and graphs for comprehensive data analysis.</p>
+            </div>
+            <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Fault Detection</h3>
+                <p class="text-gray-600 dark:text-gray-300">Advanced algorithms for predicting and detecting circuit faults.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add animation on scroll
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('[data-aos]');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    cards.forEach(card => {
+        observer.observe(card);
+    });
+});
+</script>
+{% endblock %} 
