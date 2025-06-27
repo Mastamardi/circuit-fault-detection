@@ -305,4 +305,5 @@ def api_register():
 #     return dict(static_file=static_file)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5004) 
+    port = int(os.environ.get('PORT', 5004))
+    app.run(debug=True, host='0.0.0.0', port=port) 
