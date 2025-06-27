@@ -190,57 +190,30 @@ def get_mapreduce_results():
     try:
         # Read the fault analysis data
         fault_analysis = pd.read_csv('data/mapreduce_results.csv')
-        
         # Read power analysis data
         power_analysis = pd.read_csv('data/spark_power_analysis.csv')
-        
         # Read temperature analysis data
         temp_analysis = pd.read_csv('data/spark_component_stats.csv')
-        
         # Format the data for the frontend
         response_data = {
             'fault_analysis': fault_analysis.rename(columns={
                 'component': 'component_id',
                 'fault_count': 'fault_count'
             }).to_dict(orient='records'),
-            
             'power_analysis': power_analysis.rename(columns={
                 'component': 'component_id',
                 'avg_power': 'avg_power',
                 'max_power': 'max_power'
             }).to_dict(orient='records'),
-            
             'temp_analysis': temp_analysis.rename(columns={
                 'component': 'component_id',
                 'avg_temperature': 'avg_temp',
                 'max_temperature': 'max_temp'
             }).to_dict(orient='records')
         }
-        
         return jsonify(response_data)
     except FileNotFoundError:
-        # Create dummy data if files not found
-        dummy_data = {
-            'fault_analysis': [
-                {'component_id': 'Resistor', 'fault_count': 10},
-                {'component_id': 'Capacitor', 'fault_count': 5},
-                {'component_id': 'IC', 'fault_count': 8},
-                {'component_id': 'Power Module', 'fault_count': 3}
-            ],
-            'power_analysis': [
-                {'component_id': 'Resistor', 'avg_power': 2.5, 'max_power': 5.0},
-                {'component_id': 'Capacitor', 'avg_power': 3.0, 'max_power': 6.0},
-                {'component_id': 'IC', 'avg_power': 4.0, 'max_power': 8.0},
-                {'component_id': 'Power Module', 'avg_power': 5.0, 'max_power': 10.0}
-            ],
-            'temp_analysis': [
-                {'component_id': 'Resistor', 'avg_temp': 45.0, 'max_temp': 75.0},
-                {'component_id': 'Capacitor', 'avg_temp': 50.0, 'max_temp': 80.0},
-                {'component_id': 'IC', 'avg_temp': 55.0, 'max_temp': 85.0},
-                {'component_id': 'Power Module', 'avg_temp': 60.0, 'max_temp': 90.0}
-            ]
-        }
-        return jsonify(dummy_data)
+        return jsonify({'error': 'No results available. Please upload a document first.'}), 404
 
 @app.route('/api/spark-results')
 def get_spark_results():
