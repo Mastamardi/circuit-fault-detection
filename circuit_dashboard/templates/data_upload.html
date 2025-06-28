@@ -10,6 +10,30 @@
         </p>
     </div>
 
+    <!-- Notification System -->
+    <div id="notification" class="hidden fixed top-4 right-4 z-50 max-w-sm">
+        <div class="bg-white border-l-4 p-4 shadow-lg rounded-lg">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg id="notificationIcon" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p id="notificationMessage" class="text-sm font-medium"></p>
+                    <p id="notificationDetails" class="text-sm text-gray-500 mt-1"></p>
+                </div>
+                <div class="ml-auto pl-3">
+                    <button onclick="hideNotification()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Upload Section -->
     <div class="bg-white p-8 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="100">
         <form id="uploadForm" class="space-y-6">
@@ -41,7 +65,7 @@
                     </button>
                 </div>
             </div>
-            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+            <button type="submit" id="uploadButton" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition">
                 Upload and Process
             </button>
         </form>
@@ -52,7 +76,7 @@
         <h2 class="text-xl font-semibold mb-4">File Requirements</h2>
         <ul class="list-disc list-inside space-y-2 text-gray-600">
             <li>File must be in CSV format</li>
-            <li>Required columns: timestamp, component_id, voltage, current, temperature, power</li>
+            <li>Required columns: component, voltage(V), current(A), temperature(C), power(W), fault, timestamp</li>
             <li>Maximum file size: 100MB</li>
             <li>Data should be properly formatted with no missing values</li>
         </ul>
@@ -73,15 +97,55 @@ function clearFile() {
     document.getElementById('fileInfo').classList.add('hidden');
 }
 
+function showNotification(message, details, type = 'success') {
+    const notification = document.getElementById('notification');
+    const messageEl = document.getElementById('notificationMessage');
+    const detailsEl = document.getElementById('notificationDetails');
+    const icon = document.getElementById('notificationIcon');
+    
+    messageEl.textContent = message;
+    detailsEl.textContent = details || '';
+    
+    // Set colors based on type
+    if (type === 'success') {
+        notification.className = 'fixed top-4 right-4 z-50 max-w-sm';
+        notification.querySelector('.border-l-4').className = 'border-l-4 border-green-500';
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />';
+        icon.className = 'h-6 w-6 text-green-500';
+    } else {
+        notification.className = 'fixed top-4 right-4 z-50 max-w-sm';
+        notification.querySelector('.border-l-4').className = 'border-l-4 border-red-500';
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />';
+        icon.className = 'h-6 w-6 text-red-500';
+    }
+    
+    notification.classList.remove('hidden');
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        hideNotification();
+    }, 5000);
+}
+
+function hideNotification() {
+    document.getElementById('notification').classList.add('hidden');
+}
+
 document.getElementById('uploadForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const fileInput = document.getElementById('fileInput');
+    const uploadButton = document.getElementById('uploadButton');
     const file = fileInput.files[0];
     
     if (!file) {
-        alert('Please select a file to upload');
+        showNotification('Upload Failed', 'Please select a file to upload', 'error');
         return;
     }
+
+    // Disable button and show loading state
+    uploadButton.disabled = true;
+    uploadButton.textContent = 'Uploading...';
+    uploadButton.className = 'w-full bg-gray-400 text-white py-2 px-4 rounded-lg transition cursor-not-allowed';
 
     const formData = new FormData();
     formData.append('file', file);
@@ -92,15 +156,25 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
             body: formData
         });
 
+        const result = await response.json();
+
         if (response.ok) {
-            alert('File uploaded successfully!');
+            // Success case
+            const datasetInfo = result.dataset_info;
+            const details = `Processed ${datasetInfo.total_records} records from ${datasetInfo.components} components with ${datasetInfo.fault_count} faults detected.`;
+            showNotification('Upload Successful!', details, 'success');
             clearFile();
         } else {
-            const error = await response.json();
-            alert(error.message || 'Upload failed');
+            // Error case
+            showNotification('Upload Failed', result.error || 'An error occurred during upload', 'error');
         }
     } catch (error) {
-        alert('An error occurred during upload');
+        showNotification('Upload Failed', 'Network error or server unavailable', 'error');
+    } finally {
+        // Re-enable button
+        uploadButton.disabled = false;
+        uploadButton.textContent = 'Upload and Process';
+        uploadButton.className = 'w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition';
     }
 });
 </script>
