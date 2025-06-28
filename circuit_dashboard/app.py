@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import json
 from functools import wraps
+import glob
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key in production
@@ -115,6 +116,13 @@ def upload_file():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
     if file and file.filename.endswith('.csv'):
+        # Clear previous results and cache
+        for old_file in glob.glob('data/*.csv'):
+            try:
+                os.remove(old_file)
+            except:
+                pass
+        
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath)
         session['uploaded'] = True  # Set session flag
@@ -124,11 +132,21 @@ def upload_file():
             # Read the uploaded CSV file
             df = pd.read_csv(filepath)
             
-            # Generate MapReduce results (fault count by component)
+            # Validate dataset structure
+            required_columns = ['component', 'voltage(V)', 'current(A)', 'temperature(C)', 'power(W)', 'fault', 'timestamp']
+            missing_columns = [col for col in required_columns if col not in df.columns]
+            if missing_columns:
+                return jsonify({'error': f'Invalid dataset. Missing required columns: {missing_columns}'}), 400
+            
+            # Validate data quality
+            if df.empty:
+                return jsonify({'error': 'Dataset is empty. Please upload a valid dataset.'}), 400
+            
+            # Generate fresh MapReduce results (fault count by component)
             fault_counts = df[df['fault'] == 'Yes'].groupby('component').size().reset_index(name='fault_count')
             fault_counts.to_csv('data/mapreduce_results.csv', index=False)
             
-            # Generate Spark analysis results
+            # Generate fresh Spark analysis results
             # 1. Fault Analysis
             fault_analysis = df[df['fault'] == 'Yes'].groupby('component').agg({
                 'voltage(V)': ['mean', 'std'],
@@ -179,7 +197,12 @@ def upload_file():
             
             return jsonify({
                 'message': 'File uploaded and processed successfully',
-                'filepath': filepath
+                'filepath': filepath,
+                'dataset_info': {
+                    'total_records': len(df),
+                    'components': df['component'].nunique(),
+                    'fault_count': (df['fault'] == 'Yes').sum()
+                }
             }), 200
             
         except Exception as e:
