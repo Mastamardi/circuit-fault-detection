@@ -81,6 +81,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('user', None)
+    session.pop('uploaded', None)  # Clear upload flag on logout
     return redirect(url_for('login'))
 
 @app.route('/api/login', methods=['POST'])
@@ -116,6 +117,7 @@ def upload_file():
     if file and file.filename.endswith('.csv'):
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath)
+        session['uploaded'] = True  # Set session flag
         
         # Process the uploaded data
         try:
@@ -187,6 +189,8 @@ def upload_file():
 
 @app.route('/api/mapreduce-results')
 def get_mapreduce_results():
+    if not session.get('uploaded'):
+        return jsonify({'error': 'No results available. Please upload a document first.'}), 404
     try:
         # Read the fault analysis data
         fault_analysis = pd.read_csv('data/mapreduce_results.csv')
@@ -217,6 +221,8 @@ def get_mapreduce_results():
 
 @app.route('/api/spark-results')
 def get_spark_results():
+    if not session.get('uploaded'):
+        return jsonify({'error': 'No results available. Please upload a document first.'}), 404
     results = {}
     try:
         # Assuming spark analysis results are in CSV files in the data directory
