@@ -4,6 +4,9 @@ import os
 import json
 from functools import wraps
 import glob
+import subprocess
+import threading
+import shutil
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'your-secret-key-here'  # Change this to a secure secret key in production
@@ -95,6 +98,8 @@ def api_login():
     # For demonstration, we'll accept any non-empty email/password
     if email and password:
         session['user'] = email
+        # Clear any existing analysis flags to ensure clean state
+        session.pop('uploaded', None)
         if remember:
             session.permanent = True
         return jsonify({
@@ -125,138 +130,177 @@ def upload_file():
         
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath)
-        session['uploaded'] = True  # Set session flag
+        session['uploaded'] = True  # Set session flag immediately
         
-        # Process the uploaded data
+        # Pandas-based validation and notification logic
         try:
-            # Read the uploaded CSV file
             df = pd.read_csv(filepath)
-            
-            # Validate dataset structure
             required_columns = ['component', 'voltage(V)', 'current(A)', 'temperature(C)', 'power(W)', 'fault', 'timestamp']
             missing_columns = [col for col in required_columns if col not in df.columns]
             if missing_columns:
                 return jsonify({'error': f'Invalid dataset. Missing required columns: {missing_columns}'}), 400
-            
-            # Validate data quality
             if df.empty:
                 return jsonify({'error': 'Dataset is empty. Please upload a valid dataset.'}), 400
-            
-            # Generate fresh MapReduce results (fault count by component)
-            fault_counts = df[df['fault'] == 'Yes'].groupby('component').size().reset_index(name='fault_count')
-            fault_counts.to_csv('data/mapreduce_results.csv', index=False)
-            
-            # Generate fresh Spark analysis results
-            # 1. Fault Analysis
-            fault_analysis = df[df['fault'] == 'Yes'].groupby('component').agg({
-                'voltage(V)': ['mean', 'std'],
-                'current(A)': ['mean', 'std'],
-                'temperature(C)': ['mean', 'std']
-            }).reset_index()
-            fault_analysis.columns = ['component', 'avg_voltage', 'std_voltage', 
-                                    'avg_current', 'std_current', 
-                                    'avg_temperature', 'std_temperature']
-            fault_analysis.to_csv('data/spark_fault_analysis.csv', index=False)
-            
-            # 2. Component Stats
-            component_stats = df.groupby('component').agg({
-                'voltage(V)': ['mean', 'std', 'min', 'max'],
-                'current(A)': ['mean', 'std', 'min', 'max'],
-                'temperature(C)': ['mean', 'std', 'min', 'max'],
-                'fault': lambda x: (x == 'Yes').sum()
-            }).reset_index()
-            component_stats.columns = ['component', 'avg_voltage', 'std_voltage', 'min_voltage', 'max_voltage',
-                                    'avg_current', 'std_current', 'min_current', 'max_current',
-                                    'avg_temperature', 'std_temperature', 'min_temperature', 'max_temperature',
-                                    'fault_count']
-            component_stats.to_csv('data/spark_component_stats.csv', index=False)
-            
-            # 3. Power Analysis
-            power_analysis = df.groupby('component').agg({
-                'power(W)': ['mean', 'std', 'min', 'max']
-            }).reset_index()
-            power_analysis.columns = ['component', 'avg_power', 'std_power', 'min_power', 'max_power']
-            power_analysis.to_csv('data/spark_power_analysis.csv', index=False)
-            
-            # 4. Temperature Analysis
-            temp_analysis = df.groupby('temperature_category').agg({
-                'component': 'count',
-                'fault': lambda x: (x == 'Yes').sum()
-            }).reset_index()
-            temp_analysis.columns = ['temperature_category', 'total_count', 'fault_count']
-            temp_analysis.to_csv('data/spark_temp_analysis.csv', index=False)
-            
-            # 5. Hourly Analysis
-            df['hour'] = pd.to_datetime(df['timestamp']).dt.hour
-            hourly_analysis = df.groupby('hour').agg({
-                'fault': lambda x: (x == 'Yes').sum(),
-                'component': 'count'
-            }).reset_index()
-            hourly_analysis.columns = ['hour', 'fault_count', 'total_count']
-            hourly_analysis.to_csv('data/spark_hourly_analysis.csv', index=False)
-            
-            return jsonify({
-                'message': 'File uploaded and processed successfully',
-                'filepath': filepath,
-                'dataset_info': {
-                    'total_records': len(df),
-                    'components': df['component'].nunique(),
-                    'fault_count': (df['fault'] == 'Yes').sum()
-                }
-            }), 200
-            
+            total_records = int(len(df))
+            unique_components = int(df['component'].nunique())
+            total_faults = int((df['fault'] == 'Yes').sum())
         except Exception as e:
-            return jsonify({'error': f'Error processing file: {str(e)}'}), 500
+            return jsonify({'error': f'Error validating file: {str(e)}'}), 400
+        
+        # Run MapReduce and Spark analysis as background steps (non-blocking)
+        try:
+            def run_analysis():
+                try:
+                    # Copy uploaded file to expected name for MapReduce scripts
+                    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                    shutil.copy(filepath, os.path.join(parent_dir, 'realistic_circuit_sensor_data.csv'))
+
+                    print("Running mapreduce_fault_analysis.py...")
+                    subprocess.run(['python3', os.path.join(parent_dir, 'mapreduce_fault_analysis.py')], check=True, cwd=parent_dir)
+                    if os.path.exists(os.path.join(os.path.dirname(__file__), 'data', 'fault_analysis_results.csv')):
+                        print("Fault analysis done.")
+
+                    print("Running mapreduce_avg_power.py...")
+                    subprocess.run(['python3', os.path.join(parent_dir, 'mapreduce_avg_power.py')], check=True, cwd=parent_dir)
+                    if os.path.exists(os.path.join(os.path.dirname(__file__), 'data', 'power_analysis_results.csv')):
+                        print("Power analysis done.")
+
+                    print("Running mapreduce_temp_behavior.py...")
+                    subprocess.run(['python3', os.path.join(parent_dir, 'mapreduce_temp_behavior.py')], check=True, cwd=parent_dir)
+                    if os.path.exists(os.path.join(os.path.dirname(__file__), 'data', 'temperature_analysis_results.csv')):
+                        print("Temperature analysis done.")
+
+                    print("Running spark_analysis.py...")
+                    try:
+                        spark_result = subprocess.run(['python3', os.path.join(parent_dir, 'spark_analysis.py'), filepath], 
+                                                    check=True, cwd=parent_dir, capture_output=True, text=True)
+                        print("Spark analysis completed successfully.")
+                        print("Spark output:", spark_result.stdout)
+                    except subprocess.CalledProcessError as e:
+                        print(f"Spark analysis failed with error: {e}")
+                        print(f"Spark error output: {e.stderr}")
+                    except Exception as e:
+                        print(f"Spark analysis exception: {e}")
+                    
+                    # Move Spark output files to expected locations
+                    print("Moving Spark output files...")
+                    move_spark_outputs()
+                    print("Analysis complete - all files processed")
+                except Exception as e:
+                    print(f"Analysis error: {e}")
+            threading.Thread(target=run_analysis).start()
+        except Exception as e:
+            print(f"Error starting analysis thread: {e}")
+
+        # Always return a response after starting the thread
+        return jsonify({
+            'message': 'File uploaded and processing started successfully',
+            'filepath': filepath,
+            'dataset_info': {
+                'total_records': total_records,
+                'components': unique_components,
+                'fault_count': total_faults
+            }
+        }), 200
     else:
         return jsonify({'error': 'Invalid file type. Please upload a CSV file.'}), 400
 
 @app.route('/api/mapreduce-results')
 def get_mapreduce_results():
+    # Check if user has uploaded a dataset
     if not session.get('uploaded'):
-        return jsonify({'error': 'No results available. Please upload a document first.'}), 404
+        return jsonify({'error': 'No results available. Please upload a dataset first.'}), 404
     try:
-        # Read the fault analysis data
-        fault_analysis = pd.read_csv('data/mapreduce_results.csv')
-        # Read power analysis data
-        power_analysis = pd.read_csv('data/spark_power_analysis.csv')
-        # Read temperature analysis data
-        temp_analysis = pd.read_csv('data/spark_component_stats.csv')
-        # Format the data for the frontend
-        response_data = {
-            'fault_analysis': fault_analysis.rename(columns={
-                'component': 'component_id',
-                'fault_count': 'fault_count'
-            }).to_dict(orient='records'),
-            'power_analysis': power_analysis.rename(columns={
-                'component': 'component_id',
-                'avg_power': 'avg_power',
-                'max_power': 'max_power'
-            }).to_dict(orient='records'),
-            'temp_analysis': temp_analysis.rename(columns={
-                'component': 'component_id',
-                'avg_temperature': 'avg_temp',
-                'max_temperature': 'max_temp'
-            }).to_dict(orient='records')
+        response_data = {}
+        missing_files = []
+        
+        analysis_files = {
+            'fault_analysis': ('data/fault_analysis_results.csv', {
+                'Component': 'component_id',
+                'Fault_Count': 'fault_count',
+                'Fault_Percentage': 'fault_percentage'
+            }),
+            'power_analysis': ('data/power_analysis_results.csv', {
+                'Component': 'component_id',
+                'Average_Power_Watts': 'avg_power'
+            }),
+            'temp_analysis': ('data/temperature_analysis_results.csv', {
+                'Temperature_Category': 'component_id',
+                'Average_Temperature_C': 'avg_temp'
+            })
         }
+        
+        for key, (filepath, column_mapping) in analysis_files.items():
+            abs_path = os.path.abspath(filepath)
+            print(f"DEBUG: Checking for {key} at {abs_path}")
+            if os.path.exists(filepath):
+                try:
+                    df = pd.read_csv(filepath)
+                    # Add dummy columns for frontend compatibility
+                    if key == 'power_analysis':
+                        df['max_power'] = df['avg_power'] if 'avg_power' in df.columns else df['Average_Power_Watts']
+                    if key == 'temp_analysis':
+                        df['max_temp'] = df['avg_temp'] if 'avg_temp' in df.columns else df['Average_Temperature_C']
+                    response_data[key] = df.rename(columns=column_mapping).to_dict(orient='records')
+                except Exception as e:
+                    missing_files.append(f"{key}: {str(e)}")
+            else:
+                missing_files.append(f"{key}: file not found at {abs_path}")
+        
+        if not response_data:
+            return jsonify({'error': f'No analysis results found. Missing files: {missing_files}'}), 404
+        
         return jsonify(response_data)
-    except FileNotFoundError:
-        return jsonify({'error': 'No results available. Please upload a document first.'}), 404
+    except Exception as e:
+        return jsonify({'error': f'Error reading analysis results: {str(e)}'}), 500
 
 @app.route('/api/spark-results')
 def get_spark_results():
+    # Check if user has uploaded a dataset
     if not session.get('uploaded'):
-        return jsonify({'error': 'No results available. Please upload a document first.'}), 404
+        return jsonify({'error': 'No results available. Please upload a dataset first.'}), 404
     results = {}
+    missing_files = []
+    
     try:
-        # Assuming spark analysis results are in CSV files in the data directory
-        results['fault_analysis'] = pd.read_csv('data/spark_fault_analysis.csv').to_dict(orient='records')
-        results['component_stats'] = pd.read_csv('data/spark_component_stats.csv').to_dict(orient='records')
-        results['power_analysis'] = pd.read_csv('data/spark_power_analysis.csv').to_dict(orient='records')
-        results['temp_analysis'] = pd.read_csv('data/spark_temp_analysis.csv').to_dict(orient='records')
-        results['hourly_analysis'] = pd.read_csv('data/spark_hourly_analysis.csv').to_dict(orient='records')
+        # Get the absolute path to the data directory
+        data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+        
+        # Try to read each Spark analysis result file
+        spark_files = {
+            'fault_analysis': os.path.join(data_dir, 'spark_fault_analysis.csv'),
+            'component_stats': os.path.join(data_dir, 'spark_component_stats.csv'), 
+            'power_analysis': os.path.join(data_dir, 'spark_power_analysis.csv'),
+            'temp_analysis': os.path.join(data_dir, 'spark_temp_analysis.csv'),
+            'hourly_analysis': os.path.join(data_dir, 'spark_hourly_analysis.csv'),
+            'fault_stats': os.path.join(data_dir, 'spark_fault_stats.csv'),
+            'component_summary': os.path.join(data_dir, 'component_summary.csv'),
+            'temperature_trends': os.path.join(data_dir, 'temperature_trends.csv'),
+            'time_trend': os.path.join(data_dir, 'time_trend.csv'),
+            'correlation_matrix': os.path.join(data_dir, 'correlation_matrix.csv'),
+            'heat_analysis': os.path.join(data_dir, 'heat_analysis.csv')
+        }
+        
+        for key, filepath in spark_files.items():
+            if os.path.exists(filepath):
+                try:
+                    df = pd.read_csv(filepath)
+                    results[key] = df.to_dict(orient='records')
+                except Exception as e:
+                    missing_files.append(f"{key}: {str(e)}")
+            else:
+                missing_files.append(f"{key}: file not found")
+        
+        if not results:
+            # Only return session error if no files exist AND no session
+            if not session.get('uploaded'):
+                return jsonify({'error': 'No results available. Please upload a dataset first.'}), 404
+            else:
+                return jsonify({'error': f'No Spark results found. Missing files: {missing_files}'}), 404
+            
         return jsonify(results)
-    except FileNotFoundError as e:
-        return jsonify({'error': f'Data file not found: {e}'}), 500
+    except Exception as e:
+        return jsonify({'error': f'Error reading Spark results: {str(e)}'}), 500
 
 @app.route('/api/login-status')
 def login_status():
@@ -305,6 +349,57 @@ def api_register():
 #     def static_file(filename):
 #         return url_for('static', filename=filename)
 #     return dict(static_file=static_file)
+
+# Function to move Spark output part files to single CSV files
+def move_spark_outputs():
+    """Flatten all Spark output directories in data/ to single CSV files"""
+    import shutil
+    try:
+        os.makedirs('data', exist_ok=True)
+        # Find all directories in data/ that end with .csv (Spark output dirs)
+        for entry in os.listdir('data'):
+            dir_path = os.path.join('data', entry)
+            if os.path.isdir(dir_path) and entry.endswith('.csv'):
+                print(f"Processing Spark output directory: {entry}")
+                # The flat file should be data/<dirname>.csv
+                flat_file = os.path.join('data', entry)
+                
+                # Find part-*.csv file
+                part_files = [f for f in os.listdir(dir_path) if f.startswith('part-') and f.endswith('.csv')]
+                if part_files:
+                    part_file = part_files[0]
+                    part_file_path = os.path.join(dir_path, part_file)
+                    
+                    # Create a temporary file first
+                    temp_file = flat_file + '.tmp'
+                    
+                    # Copy the part file to the temporary file
+                    shutil.copy2(part_file_path, temp_file)
+                    print(f"Copied {part_file} to temporary file {temp_file}")
+                    
+                    # Remove the original part file
+                    os.remove(part_file_path)
+                    print(f"Removed original part file: {part_file_path}")
+                    
+                    # Remove the now-empty directory
+                    shutil.rmtree(dir_path)
+                    print(f"Removed directory: {dir_path}")
+                    
+                    # If the destination file already exists, remove it
+                    if os.path.isfile(flat_file):
+                        os.remove(flat_file)
+                        print(f"Removed existing file: {flat_file}")
+                    
+                    # Move the temporary file to the final location
+                    shutil.move(temp_file, flat_file)
+                    print(f"Moved temporary file to {flat_file}")
+                else:
+                    print(f"No part-*.csv file found in {dir_path}")
+        print("Spark output flattening completed successfully")
+    except Exception as e:
+        print(f"Error moving Spark outputs: {e}")
+        import traceback
+        traceback.print_exc()
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5004))

@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 
@@ -11,11 +12,13 @@ def reduce_power(component, power_counts):
     total_count = sum(count for _, count in power_counts)
     return total_power / total_count if total_count > 0 else 0
 
-# Load the dataset
-print("Loading dataset...")
-df = pd.read_csv('realistic_circuit_sensor_data.csv')
+# Use current directory since script runs with cwd=parent_dir
+data_path = 'realistic_circuit_sensor_data.csv'
+print(f"Loading dataset from: {data_path}")
+df = pd.read_csv(data_path)
 
 # Map phase
+print("Loading dataset...")
 print("\nPerforming Map phase...")
 mapped_data = df.apply(map_power, axis=1)
 
@@ -42,5 +45,9 @@ results_df = pd.DataFrame({
     'Component': results.keys(),
     'Average_Power_Watts': results.values()
 })
-results_df.to_csv('power_analysis_results.csv', index=False)
-print("\nResults saved to 'power_analysis_results.csv'") 
+# Save to circuit_dashboard/data directory
+circuit_dashboard_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'circuit_dashboard', 'data')
+# Ensure the directory exists
+os.makedirs(circuit_dashboard_data_dir, exist_ok=True)
+results_df.to_csv(os.path.join(circuit_dashboard_data_dir, 'power_analysis_results.csv'), index=False)
+print(f"\nResults saved to '{os.path.join(circuit_dashboard_data_dir, 'power_analysis_results.csv')}'") 

@@ -76,6 +76,7 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
 {% block scripts %}
 <script>
@@ -83,12 +84,34 @@
 async function loadMapReduceResults() {
     try {
         const response = await fetch('/api/mapreduce-results');
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error loading MapReduce results:', errorData.error);
+            // Show error message to user
+            document.querySelector('.max-w-7xl').innerHTML = `
+                <div class="text-center py-8">
+                    <h2 class="text-xl font-semibold text-red-600 mb-2">No Results Available</h2>
+                    <p class="text-gray-600">${errorData.error}</p>
+                    <a href="/data-upload" class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Upload Dataset
+                    </a>
+                </div>
+            `;
+            return;
+        }
+        
         const data = await response.json();
 
         // Update fault analysis
-        updateFaultAnalysis(data.fault_analysis);
-        updatePowerAnalysis(data.power_analysis);
-        updateTempAnalysis(data.temp_analysis);
+        if (data.fault_analysis) {
+            updateFaultAnalysis(data.fault_analysis);
+        }
+        if (data.power_analysis) {
+            updatePowerAnalysis(data.power_analysis);
+        }
+        if (data.temp_analysis) {
+            updateTempAnalysis(data.temp_analysis);
+        }
     } catch (error) {
         console.error('Error loading MapReduce results:', error);
     }
@@ -200,5 +223,4 @@ function updateTempAnalysis(data) {
 // Load results when page loads
 document.addEventListener('DOMContentLoaded', loadMapReduceResults);
 </script>
-{% endblock %}
 {% endblock %} 

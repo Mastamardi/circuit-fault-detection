@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 
@@ -11,9 +12,10 @@ def reduce_faults(component, counts):
     """Reduce function to sum fault counts per component"""
     return sum(counts)
 
-# Load the dataset
-print("Loading dataset...")
-df = pd.read_csv('realistic_circuit_sensor_data.csv')
+# Use current directory since script runs with cwd=parent_dir
+data_path = 'realistic_circuit_sensor_data.csv'
+print(f"Loading dataset from: {data_path}")
+df = pd.read_csv(data_path)
 
 # Map phase
 print("\nPerforming Map phase...")
@@ -48,5 +50,9 @@ results_df = pd.DataFrame({
     'Fault_Count': results.values(),
     'Fault_Percentage': fault_percentages.values()
 })
-results_df.to_csv('fault_analysis_results.csv', index=False)
-print("\nResults saved to 'fault_analysis_results.csv'") 
+# Save to circuit_dashboard/data directory
+circuit_dashboard_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'circuit_dashboard', 'data')
+# Ensure the directory exists
+os.makedirs(circuit_dashboard_data_dir, exist_ok=True)
+results_df.to_csv(os.path.join(circuit_dashboard_data_dir, 'fault_analysis_results.csv'), index=False)
+print(f"\nResults saved to '{os.path.join(circuit_dashboard_data_dir, 'fault_analysis_results.csv')}'") 

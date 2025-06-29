@@ -1,4 +1,6 @@
 import time
+import sys
+import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
@@ -12,9 +14,27 @@ spark = SparkSession.builder \
     .config("spark.some.config.option", "some-value") \
     .getOrCreate()
 
+# Accept file path as argument
+if len(sys.argv) > 1:
+    input_file = sys.argv[1]
+else:
+    input_file = 'realistic_circuit_sensor_data.csv'
+
+print(f"Spark analysis starting with input file: {input_file}")
+
+# Check if input file exists
+if not os.path.exists(input_file):
+    print(f"ERROR: Input file {input_file} does not exist!")
+    sys.exit(1)
+
 # Read the CSV file
 print("Loading dataset...")
-df = spark.read.csv('realistic_circuit_sensor_data.csv', header=True, inferSchema=True)
+try:
+    df = spark.read.csv(input_file, header=True, inferSchema=True)
+    print(f"Dataset loaded successfully. Rows: {df.count()}, Columns: {len(df.columns)}")
+except Exception as e:
+    print(f"ERROR: Failed to load dataset: {e}")
+    sys.exit(1)
 
 # 1. Record start time for heat analysis
 start_time = time.time()
@@ -119,54 +139,82 @@ power_analysis.show(truncate=False)
 # Save results to CSV files using Spark's coalesce(1).write.csv()
 print("\nSaving results to CSV files...")
 
-# Fault statistics per component
-fault_stats = df.groupBy("component").agg(count(when(col("fault") == "Yes", True)).alias("fault_count"))
-fault_stats.coalesce(1).write.option("header", True).csv("spark_fault_stats.csv", mode="overwrite")
+# Set output directory to circuit_dashboard/data/
+output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'circuit_dashboard', 'data')
+os.makedirs(output_dir, exist_ok=True)
+print(f"Output directory: {output_dir}")
 
-# Component-wise min/avg/max for voltage, temperature, power
-component_summary = df.groupBy("component").agg(
-    min("voltage(V)").alias("min_voltage"),
-    avg("voltage(V)").alias("avg_voltage"),
-    max("voltage(V)").alias("max_voltage"),
-    min("temperature(C)").alias("min_temperature"),
-    avg("temperature(C)").alias("avg_temperature"),
-    max("temperature(C)").alias("max_temperature"),
-    min("power(W)").alias("min_power"),
-    avg("power(W)").alias("avg_power"),
-    max("power(W)").alias("max_power")
-)
-component_summary.coalesce(1).write.option("header", True).csv("component_summary.csv", mode="overwrite")
+try:
+    # Fault statistics per component
+    print("Saving fault statistics...")
+    fault_stats = df.groupBy("component").agg(count(when(col("fault") == "Yes", True)).alias("fault_count"))
+    fault_stats.coalesce(1).write.option("header", True).csv(os.path.join(output_dir, "spark_fault_stats.csv"), mode="overwrite")
 
-temp_trends = df.groupBy("temperature_category").agg(count("*").alias("count"))
-temp_trends.coalesce(1).write.option("header", True).csv("temperature_trends.csv", mode="overwrite")
+    # Component-wise min/avg/max for voltage, temperature, power
+    print("Saving component summary...")
+    component_summary = df.groupBy("component").agg(
+        min("voltage(V)").alias("min_voltage"),
+        avg("voltage(V)").alias("avg_voltage"),
+        max("voltage(V)").alias("max_voltage"),
+        min("temperature(C)").alias("min_temperature"),
+        avg("temperature(C)").alias("avg_temperature"),
+        max("temperature(C)").alias("max_temperature"),
+        min("power(W)").alias("min_power"),
+        avg("power(W)").alias("avg_power"),
+        max("power(W)").alias("max_power")
+    )
+    component_summary.coalesce(1).write.option("header", True).csv(os.path.join(output_dir, "component_summary.csv"), mode="overwrite")
 
-# Faults over time (by timestamp or index)
-time_trend = df.select("timestamp", "fault")
-time_trend.coalesce(1).write.option("header", True).csv("time_trend.csv", mode="overwrite")
+    print("Saving temperature trends...")
+    temp_trends = df.groupBy("temperature_category").agg(count("*").alias("count"))
+    temp_trends.coalesce(1).write.option("header", True).csv(os.path.join(output_dir, "temperature_trends.csv"), mode="overwrite")
 
-# Correlation matrix for visualization
-correlation_matrix_pd = df.select(numeric_cols).toPandas().corr()
-correlation_matrix_pd.to_csv("correlation_matrix.csv")
+    # Faults over time (by timestamp or index)
+    print("Saving time trend...")
+    time_trend = df.select("timestamp", "fault")
+    time_trend.coalesce(1).write.option("header", True).csv(os.path.join(output_dir, "time_trend.csv"), mode="overwrite")
 
-# Also save the original outputs for compatibility
-component_stats.coalesce(1).write.option("header", True).csv("spark_component_stats.csv", mode="overwrite")
-fault_analysis.coalesce(1).write.option("header", True).csv("spark_fault_analysis.csv", mode="overwrite")
-temp_analysis.coalesce(1).write.option("header", True).csv("spark_temp_analysis.csv", mode="overwrite")
-hourly_analysis.coalesce(1).write.option("header", True).csv("spark_hourly_analysis.csv", mode="overwrite")
-power_analysis.coalesce(1).write.option("header", True).csv("spark_power_analysis.csv", mode="overwrite")
+    # Correlation matrix for visualization
+    print("Saving correlation matrix...")
+    correlation_matrix_pd = df.select(numeric_cols).toPandas().corr()
+    correlation_matrix_pd.to_csv(os.path.join(output_dir, "correlation_matrix.csv"))
 
-# 2. Heat Generation Analysis
-end_time = time.time()
-processing_time = end_time - start_time
-estimated_heat = processing_time * 0.75
+    # Also save the original outputs for compatibility
+    print("Saving component stats...")
+    component_stats.coalesce(1).write.option("header", True).csv(os.path.join(output_dir, "spark_component_stats.csv"), mode="overwrite")
+    
+    print("Saving fault analysis...")
+    fault_analysis.coalesce(1).write.option("header", True).csv(os.path.join(output_dir, "spark_fault_analysis.csv"), mode="overwrite")
+    
+    print("Saving temp analysis...")
+    temp_analysis.coalesce(1).write.option("header", True).csv(os.path.join(output_dir, "spark_temp_analysis.csv"), mode="overwrite")
+    
+    print("Saving hourly analysis...")
+    hourly_analysis.coalesce(1).write.option("header", True).csv(os.path.join(output_dir, "spark_hourly_analysis.csv"), mode="overwrite")
+    
+    print("Saving power analysis...")
+    power_analysis.coalesce(1).write.option("header", True).csv(os.path.join(output_dir, "spark_power_analysis.csv"), mode="overwrite")
 
-import csv
-with open('heat_analysis.csv', 'w', newline='') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow(['processing_time', 'estimated_heat'])
-    writer.writerow([processing_time, estimated_heat])
+    # 2. Heat Generation Analysis
+    end_time = time.time()
+    processing_time = end_time - start_time
+    estimated_heat = processing_time * 0.75
 
-print("\nAnalysis complete! Results saved to CSV files.")
+    print("Saving heat analysis...")
+    import csv
+    with open(os.path.join(output_dir, 'heat_analysis.csv'), 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['processing_time', 'estimated_heat'])
+        writer.writerow([processing_time, estimated_heat])
+
+    print("\nAnalysis complete! Results saved to CSV files.")
+    print(f"All files saved to: {output_dir}")
+
+except Exception as e:
+    print(f"ERROR: Failed to save results: {e}")
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
 
 # Stop Spark session
 spark.stop() 

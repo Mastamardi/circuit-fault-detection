@@ -78,19 +78,54 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
 {% block scripts %}
 <script>
 // Fetch and display Spark analysis results
 async function loadSparkResults() {
+    console.log('loadSparkResults() called');
     try {
+        console.log('Making API request to /api/spark-results...');
         const response = await fetch('/api/spark-results');
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error loading Spark results:', errorData.error);
+            // Show error message to user
+            document.querySelector('.max-w-7xl').innerHTML = `
+                <div class="text-center py-8">
+                    <h2 class="text-xl font-semibold text-red-600 mb-2">No Results Available</h2>
+                    <p class="text-gray-600">${errorData.error}</p>
+                    <a href="/data-upload" class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Upload Dataset
+                    </a>
+                </div>
+            `;
+            return;
+        }
+        
         const data = await response.json();
+        console.log('Spark data received:', data);
+        console.log('Data keys:', Object.keys(data));
 
         // Update component statistics
-        updateComponentStats(data.component_stats);
-        updatePerformanceAnalysis(data.component_stats);
-        updateHourlyAnalysis(data.hourly_analysis);
+        if (data.component_stats && data.component_stats.length > 0) {
+            console.log('Updating component stats with', data.component_stats.length, 'items');
+            updateComponentStats(data.component_stats);
+            updatePerformanceAnalysis(data.component_stats);
+        } else {
+            console.log('No component_stats data found');
+        }
+        
+        if (data.hourly_analysis && data.hourly_analysis.length > 0) {
+            console.log('Updating hourly analysis with', data.hourly_analysis.length, 'items');
+            updateHourlyAnalysis(data.hourly_analysis);
+        } else {
+            console.log('No hourly_analysis data found');
+        }
     } catch (error) {
         console.error('Error loading Spark results:', error);
     }
@@ -98,9 +133,10 @@ async function loadSparkResults() {
 
 function updateComponentStats(data) {
     const total = data.length;
-    const healthy = data.filter(item => item.status === 'healthy').length;
-    const warning = data.filter(item => item.status === 'warning').length;
-    const critical = data.filter(item => item.status === 'critical').length;
+    // Calculate status based on temperature thresholds
+    const healthy = data.filter(item => item.avg_temperature < 70).length;
+    const warning = data.filter(item => item.avg_temperature >= 70 && item.avg_temperature < 85).length;
+    const critical = data.filter(item => item.avg_temperature >= 85).length;
 
     document.getElementById('totalComponents').textContent = total;
     document.getElementById('healthyComponents').textContent = healthy;
@@ -109,15 +145,23 @@ function updateComponentStats(data) {
 }
 
 function updatePerformanceAnalysis(data) {
+    // Transform data to match frontend expectations
+    const transformedData = data.map(item => ({
+        component_id: item.component,
+        efficiency: Math.max(0, 100 - (item.avg_temperature - 50) * 2), // Calculate efficiency based on temperature
+        status: item.avg_temperature < 70 ? 'healthy' : 
+                item.avg_temperature < 85 ? 'warning' : 'critical'
+    }));
+
     // Update chart
     const ctx = document.getElementById('performanceChart').getContext('2d');
     new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: data.map(item => item.component_id),
+            labels: transformedData.map(item => item.component_id),
             datasets: [{
                 label: 'Efficiency',
-                data: data.map(item => item.efficiency),
+                data: transformedData.map(item => item.efficiency),
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgb(54, 162, 235)',
                 pointBackgroundColor: 'rgb(54, 162, 235)',
@@ -140,7 +184,7 @@ function updatePerformanceAnalysis(data) {
 
     // Update table
     const tableBody = document.getElementById('performanceTableBody');
-    tableBody.innerHTML = data.map(item => `
+    tableBody.innerHTML = transformedData.map(item => `
         <tr>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.component_id}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.efficiency.toFixed(1)}%</td>
@@ -157,20 +201,27 @@ function updatePerformanceAnalysis(data) {
 }
 
 function updateHourlyAnalysis(data) {
+    // Transform data to match frontend expectations
+    const transformedData = data.map(item => ({
+        hour: item.hour,
+        avg_power: item.avg_temperature * 0.5, // Use temperature as proxy for power
+        fault_count: Math.floor(item.avg_anomaly_score * 100) // Use anomaly score as fault count
+    }));
+
     // Update chart
     const ctx = document.getElementById('hourlyChart').getContext('2d');
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: data.map(item => item.hour),
+            labels: transformedData.map(item => item.hour),
             datasets: [{
                 label: 'Average Power',
-                data: data.map(item => item.avg_power),
+                data: transformedData.map(item => item.avg_power),
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1
             }, {
                 label: 'Fault Count',
-                data: data.map(item => item.fault_count),
+                data: transformedData.map(item => item.fault_count),
                 borderColor: 'rgb(255, 99, 132)',
                 tension: 0.1
             }]
@@ -183,7 +234,7 @@ function updateHourlyAnalysis(data) {
 
     // Update table
     const tableBody = document.getElementById('hourlyTableBody');
-    tableBody.innerHTML = data.map(item => `
+    tableBody.innerHTML = transformedData.map(item => `
         <tr>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.hour}:00</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.avg_power.toFixed(2)} W</td>
@@ -193,7 +244,9 @@ function updateHourlyAnalysis(data) {
 }
 
 // Load results when page loads
-document.addEventListener('DOMContentLoaded', loadSparkResults);
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Spark Analysis page loaded');
+    loadSparkResults();
+});
 </script>
-{% endblock %}
 {% endblock %} 

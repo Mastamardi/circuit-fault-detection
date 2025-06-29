@@ -233,3 +233,108 @@ body.login-bg::before {
     z-index: 10 !important;
   }
 } 
+
+/* --- Responsive Design Additions --- */
+
+/* General container padding for mobile */
+@media (max-width: 640px) {
+  .max-w-7xl, .max-w-4xl, .container, .p-12, .p-16, .p-8, .p-6, .p-4 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  .rounded-2xl, .rounded-xl, .rounded-lg, .rounded-3xl {
+    border-radius: 0.75rem !important;
+  }
+  .space-y-16, .space-y-8, .space-y-6, .space-y-4, .space-y-3 {
+    row-gap: 1rem !important;
+  }
+  h1, .text-5xl, .text-4xl, .text-3xl {
+    font-size: 2rem !important;
+    line-height: 2.5rem !important;
+  }
+  h2, .text-2xl {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+  }
+  h3, .text-xl {
+    font-size: 1.1rem !important;
+    line-height: 1.5rem !important;
+  }
+  .p-16 { padding: 1.5rem !important; }
+  .p-12 { padding: 1rem !important; }
+  .p-8 { padding: 0.75rem !important; }
+  .p-6 { padding: 0.5rem !important; }
+  .p-4 { padding: 0.25rem !important; }
+  .h-80, .h-48, .h-32, .h-12 { height: auto !important; min-height: 180px; }
+  .w-32, .w-48, .w-64, .w-96 { width: 100% !important; max-width: 100%; }
+  .mx-auto, .my-auto { margin-left: auto !important; margin-right: auto !important; }
+  .flex-row, .md\:flex-row { flex-direction: column !important; }
+  .gap-8, .gap-6, .gap-4 { gap: 1rem !important; }
+  .grid-cols-3, .md\:grid-cols-3, .lg\:grid-cols-3, .md\:grid-cols-2, .lg\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+  .overflow-x-auto { overflow-x: auto !important; }
+  .text-center, .md\:text-left { text-align: center !important; }
+  .items-center, .justify-between { align-items: center !important; justify-content: center !important; }
+  .space-x-10, .space-x-8, .space-x-6, .space-x-4, .space-x-3 { column-gap: 0.5rem !important; }
+  .mb-12, .mb-8, .mb-6, .mb-4 { margin-bottom: 1rem !important; }
+  .mt-16, .mt-8, .mt-4 { margin-top: 1rem !important; }
+}
+
+/* Responsive tables */
+.table-container, .overflow-x-auto, table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+table {
+  min-width: 600px;
+}
+
+/* Responsive images */
+img, .object-cover, .object-contain {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive grid for cards and sections */
+@media (max-width: 1024px) {
+  .grid-cols-3, .lg\:grid-cols-3, .md\:grid-cols-3 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+@media (max-width: 768px) {
+  .grid-cols-3, .lg\:grid-cols-3, .md\:grid-cols-3, .grid-cols-2, .md\:grid-cols-2, .lg\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+  .flex-row, .md\:flex-row { flex-direction: column !important; }
+}
+
+/* Responsive modal/dialog */
+@media (max-width: 640px) {
+  .modal, .dialog, .rounded-xl, .rounded-lg {
+    width: 95vw !important;
+    left: 2.5vw !important;
+    right: 2.5vw !important;
+    padding: 1rem !important;
+  }
+}
+
+/* Responsive footer */
+footer {
+  font-size: 0.9rem;
+  padding: 0.5rem 0.25rem;
+}
+
+/* Responsive navigation */
+@media (max-width: 768px) {
+  nav .flex-row, nav .md\:flex-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  nav .space-x-10, nav .md\:space-x-10 {
+    column-gap: 0.5rem !important;
+  }
+  nav .h-20 { height: auto !important; min-height: 56px; }
+  nav img { height: 48px !important; }
+} 
