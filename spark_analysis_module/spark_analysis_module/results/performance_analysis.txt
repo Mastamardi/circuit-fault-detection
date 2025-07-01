@@ -1,0 +1,5 @@
+Performance Analysis: Spark vs. Pandas
+
+For this dataset (~80,000+ records), Apache Spark was used for distributed processing, enabling efficient handling of large-scale data. Spark leverages parallelism and optimized memory management, resulting in faster runtime and lower memory usage compared to pandas for datasets of this size or larger.
+
+In contrast, pandas is suitable for small to medium datasets and operates in-memory on a single machine. For this dataset, pandas may experience slower performance and higher memory consumption, especially as data size grows. Spark's scalability and distributed architecture make it the preferred choice for production and web integration scenarios involving large sensor datasets. 

@@ -1,0 +1,142 @@
+5.1 Apache Spark Techniques Used
+--------------------------------
+The analysis leveraged Apache Spark (PySpark) for scalable, distributed data processing. The following Spark DataFrame operations were used:
+- **filter()**: To select records matching specific criteria, such as filtering for fault occurrences.
+- **groupBy()**: To aggregate data by component, temperature category, or hour.
+- **agg()**: To compute aggregate statistics like count and average.
+- **withColumn()**: To create new columns, such as extracting the hour from timestamps.
+- **Timestamp Parsing**: Used `to_timestamp` and `hour` functions to extract hourly trends from the timestamp column.
+All results were saved as CSV files for further analysis and visualization.
+
+5.2 Insights Derived from Spark Analysis
+----------------------------------------
+- **Fault Frequency by Component**: The analysis identified which components most frequently experienced faults, providing insight into potential reliability issues.
+- **Average Power Consumption by Component**: Components were ranked by their average power usage, highlighting those with higher energy demands.
+- **Average Temperature by Temperature Category**: The average operating temperature was calculated for each temperature category, revealing which conditions are most thermally stressed.
+- **Hourly Trend of Anomaly Score**: By extracting the hour from each timestamp, the analysis revealed periods of the day with higher average anomaly scores, indicating times of increased irregularity or risk.
+
+5.3 Visualization Results (Elaborated)
+--------------------------------------
+**Figure 1: Fault Frequency by Component**
+This bar chart provides a clear visual comparison of how frequently faults occur across different electronic circuit components. Each bar represents a specific component, and the height of the bar corresponds to the number of faults recorded for that component. Components are sorted in descending order of fault count, making it easy to identify which components are most prone to faults. This visualization helps engineers and analysts quickly pinpoint reliability issues and prioritize maintenance or redesign efforts for the most problematic components.
+
+**Figure 2: Average Power Consumption by Component**
+The pie chart illustrates the distribution of average power consumption among the various components in the circuit. Each slice of the pie represents a component, and the size of the slice is proportional to its average power usage. This visualization highlights which components are the largest consumers of power, providing valuable insights for optimizing energy efficiency and identifying potential areas for power-saving improvements in the circuit design.
+
+**Figure 3: Average Temperature by Category**
+This bar chart displays the average operating temperature for each temperature category (such as Low, Medium, High, etc.). Each bar represents a temperature category, and its height indicates the average temperature recorded for that category. This visualization is useful for understanding the thermal profile of the circuit and identifying which operating conditions are most thermally stressed. It can inform decisions about cooling strategies, component placement, and safety measures.
+
+**Figure 4: Hourly Trend of Anomaly Score**
+The line chart shows how the average anomaly score varies throughout the day, with each point on the line representing the average score for a specific hour. Peaks and troughs in the line indicate periods of increased or decreased irregularities in the circuit's behavior. This visualization helps in identifying temporal patterns or recurring issues that may be linked to operational cycles, environmental factors, or usage patterns, enabling targeted monitoring and intervention during high-risk periods.
+
+5.4 Interpretation of Visualization Results
+------------------------------------------
+- **Figure 1**: Components with the highest fault frequency may require further investigation or preventive maintenance. A high fault count suggests potential reliability or design issues.
+- **Figure 2**: Components consuming the most power are key contributors to overall energy usage. Optimizing or monitoring these can improve efficiency.
+- **Figure 3**: The highest average temperature category indicates the most thermally stressed operating conditions, which may impact component lifespan or safety.
+- **Figure 4**: Peaks in the hourly anomaly score trend highlight periods of increased irregularity, suggesting when closer monitoring or intervention is needed.
+
+5.5 Methods/Tools Used to Measure Computational Heat and Environmental Impact (Project-Specific)
+-----------------------------------------------------------------------------------------------
+For this project, all Spark analyses were performed locally on a MacBook Air with an Apple M1 processor. While the analysis did not directly measure the energy consumption or heat output of the laptop, we can estimate the computational impact based on typical power usage for this hardware.
+
+The MacBook Air M1 typically consumes between 10 and 20 watts during moderate CPU-intensive tasks. For the Spark analysis of ~80,000 records, the job ran for approximately 5–10 minutes. Assuming an average power draw of 15 watts over 10 minutes (0.167 hours), the total energy consumed would be:
+
+    Energy used = 15W × 0.167h ≈ 2.5 Wh (0.0025 kWh)
+
+This energy is converted to heat, which is dissipated by the laptop's passive cooling system. While this is a small amount of energy for a single analysis, repeated or larger-scale processing would increase both energy use and heat output. For more precise measurement, tools like macOS Activity Monitor (for CPU usage) or external power meters could be used. In a data center or cloud environment, energy use and heat output would be higher, and environmental impact would depend on the energy source and cooling efficiency.
+
+5.6 Analysis of Impact of Data Size on Processing Load and Environmental Cost (Project-Specific)
+-----------------------------------------------------------------------------------------------
+As the size of the dataset increases, the computational load, energy consumption, and heat output also rise. On a MacBook Air M1, processing ~80,000 records with Spark was efficient and completed within minutes, with minimal impact on device temperature and battery life. However, as data size grows into the millions of records, processing time and energy use would increase, potentially causing the laptop to run warmer and consume more power.
+
+For even larger datasets, or for more frequent analyses, it may become necessary to use more powerful hardware or cloud-based Spark clusters. While these solutions offer scalability and faster processing, they also increase total energy consumption and environmental impact, especially if the underlying data centers are not powered by renewable energy.
+
+In summary, while the environmental impact of this project was minimal due to the small dataset and energy-efficient hardware, scaling up to larger data or more frequent processing would require careful consideration of computational resources, energy use, and sustainability practices.
+
+In summary:
+While Spark enables scalable analysis of large datasets, it is important to consider the environmental cost of computation, especially as data volumes grow. Sustainable data science practices can help mitigate the heat and energy impact of big data analytics. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Project Context
+We have completed a Spark-based data analysis module (spark_analysis_module/) that processes a large circuit sensor dataset and outputs several result CSV files and static visualizations. The goal is to integrate these results into our main website in an interactive, user-friendly way.
+What Needs to Be Done
+1. Folder Organization
+The spark_analysis_module/ folder (containing analysis scripts, result CSVs, and visualizations) has been moved into the main project directory.
+The main project is a [Flask/Django/other] web application.
+2. Integration Requirements
+Read the Spark-generated CSV files (faults_clean.csv, power_clean.csv, temp_clean.csv, anomaly_clean.csv) from spark_analysis_module/results/.
+Create interactive visualizations for each analysis result:
+Bar chart for fault frequency by component
+Pie chart for average power consumption by component
+Bar chart for average temperature by category
+Line chart for hourly trend of anomaly score
+Display these charts on a dashboard page in the website.
+Charts should update dynamically whenever the CSV files are updated (i.e., always reflect the latest analysis results).
+Allow users to download the results in different formats:
+CSV (raw data)
+PDF (charts and/or summary report)
+Other supported document types (e.g., Excel, PNG images of charts, etc.)
+Optional: Allow users to download the static images or the full analysis report.
+3. Technology Preferences
+Use Plotly (with Flask/Django) or Dash for interactive charts.
+Charts should be embedded in the website, not just static images.
+The backend should read the CSVs using pandas and pass the data to the frontend.
+For PDF or document downloads, use libraries such as ReportLab, WeasyPrint, pdfkit, or Plotly’s built-in export features.
+4. Expected Outputs
+A new dashboard page (e.g., /dashboard) on the website showing all four interactive charts.
+Each chart should be interactive (hover, zoom, filter, etc.).
+The data in the charts should always reflect the latest CSVs in spark_analysis_module/results/.
+Download buttons for:
+CSVs
+PDF reports (containing charts and/or summary)
+(Optional) Excel, PNG, or other formats
+5. What to Provide
+Backend code (Flask/Django views or Dash app) to read the CSVs and generate Plotly figures.
+Frontend code (HTML templates, JS if needed) to render the charts interactively.
+Download endpoints for CSV, PDF, and other formats.
+Instructions for how to trigger a new Spark analysis and update the dashboard.
+Example Workflow
+User runs the Spark analysis (analysis.py), which updates the CSVs in spark_analysis_module/results/.
+User visits the dashboard page on the website.
+The backend reads the latest CSVs, generates Plotly figures, and sends them to the frontend.
+The frontend displays the interactive charts.
+User can download the results in CSV, PDF, or other supported formats.
+What to Ask For
+A clear, modular integration of the Spark analysis results into the website.
+Code examples for both backend and frontend.
+Download endpoints for CSV, PDF, and other formats.
+Guidance on how to keep the dashboard in sync with new analysis runs.
+(Optional) Suggestions for further interactivity or user features.
+Summary Table of CSVs and Visualizations
+| CSV File | Chart Type | X-Axis/Labels | Y-Axis/Values | Download Formats |
+|-------------------------|------------|-----------------------|-----------------------|-------------------------|
+| faults_clean.csv | Bar | component | fault_count | CSV, PDF, Excel, PNG |
+| power_clean.csv | Pie | component | avg_power_W | CSV, PDF, Excel, PNG |
+| temp_clean.csv | Bar | temperature_category | avg_temp_C | CSV, PDF, Excel, PNG |
+| anomaly_clean.csv | Line | hour | avg_anomaly_score | CSV, PDF, Excel, PNG |
+Please provide the necessary backend and frontend code, download endpoints, and any setup instructions to achieve this integration.

@@ -263,28 +263,36 @@ def get_spark_results():
     missing_files = []
     
     try:
-        # Get the absolute path to the data directory
-        data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+        # Get the absolute path to the spark_analysis_module/results directory
+        spark_results_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'spark_analysis_module', 'results')
         
         # Try to read each Spark analysis result file
         spark_files = {
-            'fault_analysis': os.path.join(data_dir, 'spark_fault_analysis.csv'),
-            'component_stats': os.path.join(data_dir, 'spark_component_stats.csv'), 
-            'power_analysis': os.path.join(data_dir, 'spark_power_analysis.csv'),
-            'temp_analysis': os.path.join(data_dir, 'spark_temp_analysis.csv'),
-            'hourly_analysis': os.path.join(data_dir, 'spark_hourly_analysis.csv'),
-            'fault_stats': os.path.join(data_dir, 'spark_fault_stats.csv'),
-            'component_summary': os.path.join(data_dir, 'component_summary.csv'),
-            'temperature_trends': os.path.join(data_dir, 'temperature_trends.csv'),
-            'time_trend': os.path.join(data_dir, 'time_trend.csv'),
-            'correlation_matrix': os.path.join(data_dir, 'correlation_matrix.csv'),
-            'heat_analysis': os.path.join(data_dir, 'heat_analysis.csv')
+            'faults': os.path.join(spark_results_dir, 'faults.csv'),
+            'power': os.path.join(spark_results_dir, 'power.csv'),
+            'temp': os.path.join(spark_results_dir, 'temp.csv'),
+            'anomaly': os.path.join(spark_results_dir, 'anomaly.csv')
         }
         
         for key, filepath in spark_files.items():
             if os.path.exists(filepath):
                 try:
-                    df = pd.read_csv(filepath)
+                    # Handle different CSV formats
+                    if key == 'power':
+                        # Power CSV has no headers, format: component,power_value
+                        df = pd.read_csv(filepath, header=None, names=['component', 'avg_power_W'])
+                    elif key == 'faults':
+                        # Faults CSV has headers
+                        df = pd.read_csv(filepath)
+                    elif key == 'temp':
+                        # Temp CSV has headers
+                        df = pd.read_csv(filepath)
+                    elif key == 'anomaly':
+                        # Anomaly CSV has headers
+                        df = pd.read_csv(filepath)
+                    else:
+                        df = pd.read_csv(filepath)
+                    
                     results[key] = df.to_dict(orient='records')
                 except Exception as e:
                     missing_files.append(f"{key}: {str(e)}")

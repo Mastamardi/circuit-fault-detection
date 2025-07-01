@@ -1,0 +1,4 @@
+Buck Converter had the highest fault frequency, indicating potential reliability issues. Components with lower fault counts are more stable.
+Rheostat consumes the most power on average. Power distribution is uneven among components, which may affect energy efficiency.
+The 'High' category has the highest average temperature, suggesting these conditions are most thermally stressed.
+Anomaly scores peak around hour 23, indicating increased irregularities during this period. Monitoring is advised at these times.

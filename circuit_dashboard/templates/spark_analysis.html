@@ -6,82 +6,63 @@
     <div class="text-center" data-aos="fade-up">
         <h1 class="text-3xl font-bold text-gray-900 mb-4">Spark Analysis Results</h1>
         <p class="text-gray-600">
-            Real-time analytics and component statistics using Apache Spark
+            Interactive visualizations of circuit component analysis using Apache Spark
         </p>
     </div>
 
-    <!-- Component Statistics -->
+    <!-- Download Section -->
     <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up">
-        <h2 class="text-xl font-semibold mb-4">Component Statistics</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-blue-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-blue-800">Total Components</h3>
-                <p id="totalComponents" class="text-2xl font-bold text-blue-600">-</p>
-            </div>
-            <div class="bg-green-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-green-800">Healthy Components</h3>
-                <p id="healthyComponents" class="text-2xl font-bold text-green-600">-</p>
-            </div>
-            <div class="bg-yellow-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-yellow-800">Warning Components</h3>
-                <p id="warningComponents" class="text-2xl font-bold text-yellow-600">-</p>
-            </div>
-            <div class="bg-red-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-red-800">Critical Components</h3>
-                <p id="criticalComponents" class="text-2xl font-bold text-red-600">-</p>
-            </div>
+        <h2 class="text-xl font-semibold mb-4">Download Results</h2>
+        <div class="flex flex-wrap gap-4">
+            <button onclick="downloadCSV()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Download CSV
+            </button>
+            <button onclick="downloadPDF()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Download PDF Report
+            </button>
+            <button onclick="downloadExcel()" class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700">
+                Download Excel
+            </button>
+            <button onclick="downloadPNG()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                Download PNG Images
+            </button>
         </div>
     </div>
 
-    <!-- Analysis Grid -->
+    <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Component Performance -->
+        <!-- Fault Frequency Chart -->
         <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="100">
-            <h2 class="text-xl font-semibold mb-4">Component Performance</h2>
-            <div class="h-80">
-                <canvas id="performanceChart"></canvas>
-            </div>
-            <div class="mt-4 overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Component ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Efficiency</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="performanceTableBody" class="bg-white divide-y divide-gray-200">
-                    </tbody>
-                </table>
-            </div>
+            <h2 class="text-xl font-semibold mb-4">Fault Frequency by Component</h2>
+            <div id="faultChart" class="h-80"></div>
         </div>
 
-        <!-- Hourly Analysis -->
+        <!-- Power Consumption Chart -->
         <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="200">
-            <h2 class="text-xl font-semibold mb-4">Hourly Analysis</h2>
-            <div class="h-80">
-                <canvas id="hourlyChart"></canvas>
-            </div>
-            <div class="mt-4 overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hour</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Power</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fault Count</th>
-                        </tr>
-                    </thead>
-                    <tbody id="hourlyTableBody" class="bg-white divide-y divide-gray-200">
-                    </tbody>
-                </table>
-            </div>
+            <h2 class="text-xl font-semibold mb-4">Average Power Consumption by Component</h2>
+            <div id="powerChart" class="h-80"></div>
+        </div>
+
+        <!-- Temperature Chart -->
+        <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="300">
+            <h2 class="text-xl font-semibold mb-4">Average Temperature by Category</h2>
+            <div id="tempChart" class="h-80"></div>
+        </div>
+
+        <!-- Anomaly Score Chart -->
+        <div class="bg-white p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="400">
+            <h2 class="text-xl font-semibold mb-4">Hourly Anomaly Score Trend</h2>
+            <div id="anomalyChart" class="h-80"></div>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script>
+let sparkData = {};
+
 // Fetch and display Spark analysis results
 async function loadSparkResults() {
     console.log('loadSparkResults() called');
@@ -111,136 +92,242 @@ async function loadSparkResults() {
         console.log('Spark data received:', data);
         console.log('Data keys:', Object.keys(data));
 
-        // Update component statistics
-        if (data.component_stats && data.component_stats.length > 0) {
-            console.log('Updating component stats with', data.component_stats.length, 'items');
-            updateComponentStats(data.component_stats);
-            updatePerformanceAnalysis(data.component_stats);
-        } else {
-            console.log('No component_stats data found');
+        sparkData = data;
+
+        // Create charts
+        if (data.faults && data.faults.length > 0) {
+            createFaultChart(data.faults);
         }
         
-        if (data.hourly_analysis && data.hourly_analysis.length > 0) {
-            console.log('Updating hourly analysis with', data.hourly_analysis.length, 'items');
-            updateHourlyAnalysis(data.hourly_analysis);
-        } else {
-            console.log('No hourly_analysis data found');
+        if (data.power && data.power.length > 0) {
+            createPowerChart(data.power);
+        }
+        
+        if (data.temp && data.temp.length > 0) {
+            createTempChart(data.temp);
+        }
+        
+        if (data.anomaly && data.anomaly.length > 0) {
+            createAnomalyChart(data.anomaly);
         }
     } catch (error) {
         console.error('Error loading Spark results:', error);
     }
 }
 
-function updateComponentStats(data) {
-    const total = data.length;
-    // Calculate status based on temperature thresholds
-    const healthy = data.filter(item => item.avg_temperature < 70).length;
-    const warning = data.filter(item => item.avg_temperature >= 70 && item.avg_temperature < 85).length;
-    const critical = data.filter(item => item.avg_temperature >= 85).length;
-
-    document.getElementById('totalComponents').textContent = total;
-    document.getElementById('healthyComponents').textContent = healthy;
-    document.getElementById('warningComponents').textContent = warning;
-    document.getElementById('criticalComponents').textContent = critical;
-}
-
-function updatePerformanceAnalysis(data) {
-    // Transform data to match frontend expectations
-    const transformedData = data.map(item => ({
-        component_id: item.component,
-        efficiency: Math.max(0, 100 - (item.avg_temperature - 50) * 2), // Calculate efficiency based on temperature
-        status: item.avg_temperature < 70 ? 'healthy' : 
-                item.avg_temperature < 85 ? 'warning' : 'critical'
-    }));
-
-    // Update chart
-    const ctx = document.getElementById('performanceChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'radar',
-        data: {
-            labels: transformedData.map(item => item.component_id),
-            datasets: [{
-                label: 'Efficiency',
-                data: transformedData.map(item => item.efficiency),
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgb(54, 162, 235)',
-                pointBackgroundColor: 'rgb(54, 162, 235)',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgb(54, 162, 235)'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    max: 100
-                }
+function createFaultChart(data) {
+    const trace = {
+        x: data.map(item => item.component),
+        y: data.map(item => item.fault_count),
+        type: 'bar',
+        marker: {
+            color: 'rgba(54, 162, 235, 0.8)',
+            line: {
+                color: 'rgb(54, 162, 235)',
+                width: 1
             }
         }
-    });
+    };
 
-    // Update table
-    const tableBody = document.getElementById('performanceTableBody');
-    tableBody.innerHTML = transformedData.map(item => `
-        <tr>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.component_id}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.efficiency.toFixed(1)}%</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${item.status === 'critical' ? 'bg-red-100 text-red-800' : 
-                      item.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 
-                      'bg-green-100 text-green-800'}">
-                    ${item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-                </span>
-            </td>
-        </tr>
-    `).join('');
+    const layout = {
+        title: 'Fault Frequency by Component',
+        xaxis: {
+            title: 'Component',
+            tickangle: -45
+        },
+        yaxis: {
+            title: 'Fault Count'
+        },
+        margin: {
+            l: 60,
+            r: 30,
+            t: 60,
+            b: 100
+        }
+    };
+
+    Plotly.newPlot('faultChart', [trace], layout, {responsive: true});
 }
 
-function updateHourlyAnalysis(data) {
-    // Transform data to match frontend expectations
-    const transformedData = data.map(item => ({
-        hour: item.hour,
-        avg_power: item.avg_temperature * 0.5, // Use temperature as proxy for power
-        fault_count: Math.floor(item.avg_anomaly_score * 100) // Use anomaly score as fault count
-    }));
-
-    // Update chart
-    const ctx = document.getElementById('hourlyChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: transformedData.map(item => item.hour),
-            datasets: [{
-                label: 'Average Power',
-                data: transformedData.map(item => item.avg_power),
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-            }, {
-                label: 'Fault Count',
-                data: transformedData.map(item => item.fault_count),
-                borderColor: 'rgb(255, 99, 132)',
-                tension: 0.1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
+function createPowerChart(data) {
+    const trace = {
+        labels: data.map(item => item.component),
+        values: data.map(item => parseFloat(item.avg_power_W)),
+        type: 'pie',
+        hole: 0.4,
+        marker: {
+            colors: [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384',
+                '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+                '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384'
+            ]
         }
-    });
+    };
 
-    // Update table
-    const tableBody = document.getElementById('hourlyTableBody');
-    tableBody.innerHTML = transformedData.map(item => `
-        <tr>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.hour}:00</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.avg_power.toFixed(2)} W</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.fault_count}</td>
-        </tr>
-    `).join('');
+    const layout = {
+        title: 'Average Power Consumption by Component',
+        margin: {
+            l: 30,
+            r: 30,
+            t: 60,
+            b: 30
+        }
+    };
+
+    Plotly.newPlot('powerChart', [trace], layout, {responsive: true});
+}
+
+function createTempChart(data) {
+    const trace = {
+        x: data.map(item => item.temperature_category),
+        y: data.map(item => parseFloat(item.avg_temp_C)),
+        type: 'bar',
+        marker: {
+            color: data.map(item => {
+                const temp = parseFloat(item.avg_temp_C);
+                if (temp < 50) return 'rgba(75, 192, 192, 0.8)'; // Cool - blue
+                if (temp < 70) return 'rgba(255, 205, 86, 0.8)'; // Warm - yellow
+                return 'rgba(255, 99, 132, 0.8)'; // Hot - red
+            }),
+            line: {
+                color: 'rgb(0, 0, 0)',
+                width: 1
+            }
+        }
+    };
+
+    const layout = {
+        title: 'Average Temperature by Category',
+        xaxis: {
+            title: 'Temperature Category'
+        },
+        yaxis: {
+            title: 'Average Temperature (°C)'
+        },
+        margin: {
+            l: 60,
+            r: 30,
+            t: 60,
+            b: 60
+        }
+    };
+
+    Plotly.newPlot('tempChart', [trace], layout, {responsive: true});
+}
+
+function createAnomalyChart(data) {
+    const trace = {
+        x: data.map(item => item.hour),
+        y: data.map(item => parseFloat(item.avg_anomaly_score)),
+        type: 'scatter',
+        mode: 'lines+markers',
+        line: {
+            color: 'rgb(255, 99, 132)',
+            width: 3
+        },
+        marker: {
+            color: 'rgb(255, 99, 132)',
+            size: 6
+        }
+    };
+
+    const layout = {
+        title: 'Hourly Anomaly Score Trend',
+        xaxis: {
+            title: 'Hour of Day',
+            range: [0, 23]
+        },
+        yaxis: {
+            title: 'Average Anomaly Score'
+        },
+        margin: {
+            l: 60,
+            r: 30,
+            t: 60,
+            b: 60
+        }
+    };
+
+    Plotly.newPlot('anomalyChart', [trace], layout, {responsive: true});
+}
+
+// Download functions
+function downloadCSV() {
+    if (!sparkData || Object.keys(sparkData).length === 0) {
+        alert('No data available to download');
+        return;
+    }
+    
+    // Create CSV content for each dataset
+    let csvContent = '';
+    
+    if (sparkData.faults) {
+        csvContent += 'Fault Analysis\n';
+        csvContent += 'component,fault_count\n';
+        sparkData.faults.forEach(item => {
+            csvContent += `${item.component},${item.fault_count}\n`;
+        });
+        csvContent += '\n';
+    }
+    
+    if (sparkData.power) {
+        csvContent += 'Power Analysis\n';
+        csvContent += 'component,avg_power_W\n';
+        sparkData.power.forEach(item => {
+            csvContent += `${item.component},${item.avg_power_W}\n`;
+        });
+        csvContent += '\n';
+    }
+    
+    if (sparkData.temp) {
+        csvContent += 'Temperature Analysis\n';
+        csvContent += 'temperature_category,avg_temp_C\n';
+        sparkData.temp.forEach(item => {
+            csvContent += `${item.temperature_category},${item.avg_temp_C}\n`;
+        });
+        csvContent += '\n';
+    }
+    
+    if (sparkData.anomaly) {
+        csvContent += 'Anomaly Analysis\n';
+        csvContent += 'hour,avg_anomaly_score\n';
+        sparkData.anomaly.forEach(item => {
+            csvContent += `${item.hour},${item.avg_anomaly_score}\n`;
+        });
+    }
+    
+    // Download the file
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'spark_analysis_results.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function downloadPDF() {
+    alert('PDF download functionality would be implemented here. This would generate a comprehensive report with all charts and analysis.');
+}
+
+function downloadExcel() {
+    alert('Excel download functionality would be implemented here. This would create an Excel file with multiple sheets for each analysis.');
+}
+
+function downloadPNG() {
+    // Download each chart as PNG
+    const charts = ['faultChart', 'powerChart', 'tempChart', 'anomalyChart'];
+    charts.forEach((chartId, index) => {
+        setTimeout(() => {
+            Plotly.downloadImage(chartId, {
+                format: 'png',
+                filename: `spark_analysis_chart_${index + 1}`,
+                height: 600,
+                width: 800
+            });
+        }, index * 500); // Stagger downloads
+    });
 }
 
 // Load results when page loads

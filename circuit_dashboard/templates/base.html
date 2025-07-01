@@ -2,7 +2,11 @@
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#0ea5e9">
     <title>Circuit Component Fault Detection Dashboard</title>
     
     <!-- Tailwind CSS -->
@@ -56,7 +60,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Navigation -->
-    <nav class="bg-white dark:bg-gray-800 shadow-lg transition-colors duration-200">
+    <nav class="bg-white dark:bg-gray-800 shadow-lg transition-colors duration-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between h-20 w-full">
                 <!-- Logo -->
@@ -65,7 +69,7 @@
                 </a>
                 <!-- Hamburger Button (Mobile) -->
                 <div class="md:hidden flex items-center">
-                    <button id="navbar-toggle" class="text-gray-700 dark:text-gray-200 focus:outline-none">
+                    <button id="navbar-toggle" class="text-gray-700 dark:text-gray-200 focus:outline-none p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200" aria-label="Toggle navigation menu">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
@@ -93,7 +97,7 @@
                         {% endif %}
                     </div>
                     <div class="flex items-center pl-4 border-l border-gray-200 dark:border-gray-700 h-full">
-                        <button id="darkModeToggle" class="flex items-center justify-center h-12 w-12 p-0 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200">
+                        <button id="darkModeToggle" class="flex items-center justify-center h-12 w-12 p-0 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200" aria-label="Toggle dark mode">
         <!-- Sun icon -->
         <svg class="w-6 h-6 text-gray-800 dark:text-yellow-300 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -107,22 +111,22 @@
                 </div>
             </div>
             <!-- Mobile Menu -->
-            <div id="mobile-menu" class="md:hidden hidden flex-col space-y-2 mt-4">
+            <div id="mobile-menu" class="md:hidden hidden flex-col space-y-2 mt-4 pb-4">
                 <div class="flex flex-col space-y-2">
-                    <a href="/" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Home</a>
-                    <a href="{{ url_for('data_upload') }}" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Data Upload</a>
-                    <a href="{{ url_for('mapreduce') }}" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">MapReduce</a>
-                    <a href="{{ url_for('spark_analysis') }}" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Spark Analysis</a>
-                    <a href="{{ url_for('visualizations') }}" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Visualizations</a>
-                    <a href="{{ url_for('components') }}" class="block px-4 py-2 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Components</a>
-                    <div class="flex items-center space-x-4 mt-2">
+                    <a href="/" class="block px-4 py-3 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 rounded-lg">Home</a>
+                    <a href="{{ url_for('data_upload') }}" class="block px-4 py-3 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 rounded-lg">Data Upload</a>
+                    <a href="{{ url_for('mapreduce') }}" class="block px-4 py-3 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 rounded-lg">MapReduce</a>
+                    <a href="{{ url_for('spark_analysis') }}" class="block px-4 py-3 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 rounded-lg">Spark Analysis</a>
+                    <a href="{{ url_for('visualizations') }}" class="block px-4 py-3 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 rounded-lg">Visualizations</a>
+                    <a href="{{ url_for('components') }}" class="block px-4 py-3 text-lg font-medium text-gray-600 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 rounded-lg">Components</a>
+                    <div class="flex items-center justify-between space-x-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                         {% if is_authenticated %}
                             <span class="text-gray-500 dark:text-gray-300 text-base truncate max-w-xs">Welcome, {{ current_user }}</span>
-                            <a href="{{ url_for('logout') }}" class="inline-flex items-center px-2 py-1 text-base text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200">Logout</a>
+                            <a href="{{ url_for('logout') }}" class="inline-flex items-center px-3 py-2 text-base text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 rounded-lg">Logout</a>
                         {% else %}
-                            <a href="{{ url_for('login') }}" class="inline-flex items-center px-2 py-1 text-base text-gray-500 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Login</a>
+                            <a href="{{ url_for('login') }}" class="inline-flex items-center px-3 py-2 text-base text-gray-500 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors duration-200 rounded-lg">Login</a>
                         {% endif %}
-                        <button id="darkModeToggleMobile" class="flex items-center justify-center h-10 w-10 p-0 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200">
+                        <button id="darkModeToggleMobile" class="flex items-center justify-center h-10 w-10 p-0 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200" aria-label="Toggle dark mode">
                             <!-- Sun icon -->
                             <svg class="w-6 h-6 text-gray-800 dark:text-yellow-300 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -184,15 +188,44 @@
     </div>
 
     <script>
-    // Navbar toggle for mobile
+    // Enhanced mobile navigation
     const navbarToggle = document.getElementById('navbar-toggle');
     const navbarMenu = document.getElementById('navbar-menu');
     const mobileMenu = document.getElementById('mobile-menu');
+    
     if (navbarToggle) {
         navbarToggle.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
+            // Add smooth animation
+            if (!mobileMenu.classList.contains('hidden')) {
+                mobileMenu.style.display = 'flex';
+                mobileMenu.style.opacity = '0';
+                mobileMenu.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    mobileMenu.style.opacity = '1';
+                    mobileMenu.style.transform = 'translateY(0)';
+                }, 10);
+            }
         });
     }
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+            if (!navbarToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        }
+    });
+    
+    // Close mobile menu when clicking on a link
+    const mobileLinks = mobileMenu ? mobileMenu.querySelectorAll('a') : [];
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+        });
+    });
+    
     // Dark mode toggle for mobile
     const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
     if (darkModeToggleMobile) {
@@ -201,6 +234,28 @@
             localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
         });
     }
+    
+    // Prevent zoom on input focus for iOS
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            if (window.innerWidth <= 768) {
+                input.style.fontSize = '16px';
+            }
+        });
+    });
+    
+    // Add touch feedback for mobile
+    const touchElements = document.querySelectorAll('button, a, .btn, [role="button"]');
+    touchElements.forEach(element => {
+        element.addEventListener('touchstart', () => {
+            element.style.transform = 'scale(0.98)';
+        });
+        
+        element.addEventListener('touchend', () => {
+            element.style.transform = 'scale(1)';
+        });
+    });
     </script>
 </body>
 </html> 
